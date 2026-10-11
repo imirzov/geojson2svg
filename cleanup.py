@@ -6,7 +6,6 @@
 import json
 from typing import Any
 
-import base.file
 import settings
 
 REMOVE = {
@@ -118,7 +117,7 @@ def recursively_remove_keys(data: dict[str, Any] | list[Any],
 def main() -> None:
     for fname, list_ in REMOVE.items():
         fpath = settings.files / fname
-        d = base.file.get_any_json_code(fpath)
+        d = json.loads(fpath.read_text(encoding=settings.encoding))
         d = recursively_remove_keys(d, list_)
 
         # print(json.dumps(d, ensure_ascii=False, indent=2))

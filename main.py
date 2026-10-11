@@ -14,9 +14,8 @@ import pandas as pd
 import geopandas as gpd
 
 import settings
-from tools.geojson.geojson2svg.geojson2svg_good4 import MapObj
-from tools.geojson.geojson2svg.lands \
-    import Districts, PrahaObvody, DistrictsWithPrague
+from geojson2svg.geojson2svg_good4 import MapObj
+from geojson2svg.lands import Districts, PrahaObvody, DistrictsWithPrague
 
 
 def dictricts_with_prague() -> None:

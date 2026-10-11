@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from tools.geojson.geojson2svg import common
-from tools.geojson.geojson2svg.common import Point
+from geojson2svg import common
+from geojson2svg.common import Point
 
 PRECISION: int = 1  # px
 

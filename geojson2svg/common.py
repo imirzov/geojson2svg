@@ -51,7 +51,7 @@ import unidecode
 
 import settings
 from settings import report as r
-from tools.geojson.geojson2svg.lands import Land
+from geojson2svg.lands import Land
 
 PARENTS: dict[int, str] = dict()  # id_: name
 POINTS: dict[int, Point] = dict()  # id_: (x, y)

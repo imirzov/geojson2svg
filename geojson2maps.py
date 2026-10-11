@@ -6,11 +6,9 @@
 import json
 from typing import Any, Union
 
-import base.geo
 import settings
 from settings import report as r
-from tools.geojson.geojson2svg.lands \
-    import Region, District, City, CityPart
+from geojson2svg.lands import Region, District, City, CityPart
 
 GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
 
@@ -125,8 +123,3 @@ def main() -> None:
     fpath = settings.logs / settings.geo
     with open(fpath, 'w', encoding=settings.encoding) as f:
         json.dump(config_geo_json, f, ensure_ascii=False, indent=4)
-
-
-if __name__ == '__main__':
-    for cs in base.geo.get_cases():
-        print(len(cs.geo_case), cs.geo_case)

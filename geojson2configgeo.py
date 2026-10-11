@@ -8,8 +8,7 @@ from typing import Any, Union
 
 import settings
 from settings import report as r
-from tools.geojson.geojson2svg.lands import (Region, District,
-                                             City, CityPart)
+from geojson2svg.lands import Region, District, City, CityPart
 
 GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
 

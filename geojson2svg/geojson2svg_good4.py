@@ -4,9 +4,8 @@
 import sys
 
 from settings import report as r
-from tools.geojson.geojson2svg import common
-from tools.geojson.geojson2svg.common \
-    import Point, Polygon, MultiPolygon
+from geojson2svg import common
+from geojson2svg.common import Point, Polygon, MultiPolygon
 
 PRECISION: int = 3  # px
 BORDER_UTMOST_POINTS: list[Point] = []

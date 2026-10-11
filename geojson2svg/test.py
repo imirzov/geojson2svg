@@ -3,10 +3,10 @@
 
 """Test for good4 variant."""
 
-from tools.geojson.geojson2svg.geojson2svg_good4 \
+from geojson2svg.geojson2svg_good4 \
     import (MapObj, PRECISION, tie_border_points,
             remove_points_without_pair, check_order)
-from tools.geojson.geojson2svg.lands import Land
+from geojson2svg.lands import Land
 
 
 class Test1(Land):
