@@ -5,18 +5,22 @@
 Global application's settings.
 """
 
+import datetime
 import logging
 from pathlib import Path
 import re
 import unidecode
 
-SRC_DIR = Path(__file__).parent
+SRC_DIR = Path(__file__).parent.resolve()
+files = Path(SRC_DIR / 'files').resolve()
+logs = Path(SRC_DIR / 'logs').resolve()
 
-files = Path(SRC_DIR / '..' / 'files').resolve()
-logs = Path(SRC_DIR / '..' / 'logs').resolve()
+for d in [logs, files]:
+    if not d.exists():
+        d.mkdir(parents=True, exist_ok=True)
 
 report = logging.getLogger('report')
-
+log_level = logging.INFO
 encoding = 'utf-8'
 geo = 'geo.json'
 
@@ -30,3 +34,10 @@ def to_en(s: str) -> str:
     s = s.lower()
     s = re.sub(r'\s', '-', s)
     return s
+
+
+def time_now() -> str:
+    """Last update time for HTML pages.
+    2023-12-17 17:34:42
+    """
+    return str(datetime.datetime.now())[:19]

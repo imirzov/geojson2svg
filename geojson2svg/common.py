@@ -159,7 +159,7 @@ class Polygon(Obj, ABC):
             if pt.utmost:
                 r.warning(f'Point {id_} is utmost and cannot be removed.')
             else:
-                POINTS[id_].delete()
+                POINTS.pop(id_)
                 if b:
                     self.children.remove(id_)
 
@@ -223,8 +223,6 @@ class MapObj:
         }
         """
         fpath = settings.files / self.klass.input_name
-        # if not fpath.exists():
-        #     fpath = settings.files / self.klass.output_name
         if not fpath.exists():
             r.error(f'File not found: {fpath}')
             raise SystemExit
