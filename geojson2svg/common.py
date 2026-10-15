@@ -70,16 +70,33 @@ class Obj(ABC):
         self.ymax = 0
 
     def get_bbox(self) -> tuple[float, float, float, float]:
-        return get_obj_bbox(self)
+        if isinstance(self, Point):
+            return float(self.x), float(self.x), float(self.y), float(self.y)
 
-    def get_children(self) -> Any:
-        pass
+        children = self.get_children()
+        if not children:
+            raise ValueError('Cannot calculate a bounding box'
+                             ' for an empty object.')
+
+        min_x, max_x, min_y, max_y = children[0].get_bbox()
+        for child in children[1:]:
+            child_min_x, child_max_x, child_min_y, child_max_y = (
+                child.get_bbox())
+            min_x = min(min_x, child_min_x)
+            max_x = max(max_x, child_max_x)
+            min_y = min(min_y, child_min_y)
+            max_y = max(max_y, child_max_y)
+        return min_x, max_x, min_y, max_y
+
+    def get_children(self) -> list[Any]:
+        return []
 
 
 class Point(Obj):
 
     def __init__(self, x: float, y: float,
                  parent: Polygon | None = None) -> None:
+        super().__init__()
         self.id_ = len(POINTS)
         self.x = x
         self.y = y
@@ -138,13 +155,12 @@ class Point(Obj):
 class Polygon(Obj, ABC):
 
     def __init__(self, coordinates: list[tuple[float, float]]) -> None:
+        super().__init__()
         self.id_ = len(POLYGONS)
         assert is_polygon(coordinates)
-        # self.children: list[int] = list()  # list of point ids
         self.set_children(coordinates)
         self.converted = False
-        self.xmin, self.xmax, self.ymin, self.ymax =\
-            get_bbox(self.get_children())
+        self.xmin, self.xmax, self.ymin, self.ymax = self.get_bbox()
 
     def set_children(self, coordinates: list[tuple[float, float]]) -> None:
         for x, y in coordinates:
@@ -185,10 +201,10 @@ class MultiPolygon(Obj, ABC):
 
     def __init__(self, path_id: str,
                  coordinates: list[list[list[tuple[float, float]]]]) -> None:
+        super().__init__()
         self.path_id = path_id
-        # self.children: list[int] = list()
         self.set_children(coordinates)
-        self.xmin, self.xmax, self.ymin, self.ymax = get_obj_bbox(self)
+        self.xmin, self.xmax, self.ymin, self.ymax = self.get_bbox()
 
     def set_children(self, coordinates:
                      list[list[list[tuple[float, float]]]]) -> None:
@@ -209,12 +225,12 @@ class MultiPolygon(Obj, ABC):
 class MapObj(Obj):
 
     def __init__(self, klass: type[Land]) -> None:
+        super().__init__()
         os.chdir(os.path.dirname(__file__))
         self.klass = klass
         self.svg_fpath = os.path.join(
             settings.files,
             os.path.splitext(self.klass.output_name)[0] + '.svg')
-        # self.children: list[str] = []
         self.read_children()
         r.info('{}x{}, {} paths, {} points before, {}\n'
                .format(self.klass.w, self.klass.h,
@@ -263,7 +279,7 @@ class MapObj(Obj):
         """Convert latitude and longitude GeoJson coords
         to Land's width (w) and height (h) in pixels.
         """
-        min_x, max_x, min_y, max_y = get_obj_bbox(self)
+        min_x, max_x, min_y, max_y = self.get_bbox()
         for mp in self.get_children():
             for pg in mp.get_children():
                 pg.convert_coords_to_px(min_x, max_x, min_y, max_y,
@@ -413,21 +429,6 @@ def is_polygon(coordinates: list[tuple[float, float]]) -> bool:
             if type(c) not in [int, float]:
                 return False
     return True
-
-
-def get_obj_bbox(obj: Obj | Polygon | MultiPolygon | MapObj) \
-        -> tuple[float, float, float, float]:
-    """Calculate bounding box: min and max X and Y coordinates."""
-    min_x = 1e+9
-    min_y = 1e+9
-    max_x = -1e+9
-    max_y = -1e+9
-    for ch in obj.get_children():
-        min_x = min(ch.xmin, min_x)
-        max_x = max(ch.xmax, max_x)
-        min_y = min(ch.ymin, min_y)
-        max_y = max(ch.ymax, max_y)
-    return min_x, max_x, min_y, max_y
 
 
 def get_bbox(points: list[Point]) -> tuple[float, float, float, float]:
