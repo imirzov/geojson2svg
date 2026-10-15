@@ -11,19 +11,20 @@ class MapObj(common.MapObj):
 
     def run(self) -> None:
         self.convert_coords_to_px()
-        self.collapse_border_gaps()
+        self.collapse_border_gaps(PRECISION)
         self.remove_close_points(PRECISION)
         self.round_point_coordinates(1)
         self.remove_needles()
         self.count_points()
         self.generate_svg_code()
 
-    def collapse_border_gaps(self) -> None:
+    def collapse_border_gaps(self, precision: int) -> None:
         """Merge neighbour points of different multipolygons to avoid gaps
         between paths. If polygons are crossed by X and Y, then search for
         close points. Otherwise - do not waste time.
         TODO This alg is too slow - can not process 3.cities.geojson.
         """
+
         # Find overlapping multipolygons
         mergable_multipolygon_pairs: \
             list[tuple[MultiPolygon, MultiPolygon]] = []
@@ -59,7 +60,7 @@ class MapObj(common.MapObj):
 
                 # Merge points on 2nd polygon
                 for pt2 in points2:
-                    if pt1.close_to(pt2, PRECISION):
+                    if pt1.close_to(pt2, precision):
                         points_to_merge2.append(pt2)
                 for pt in points_to_merge2:
                     points2.remove(pt)
@@ -67,7 +68,7 @@ class MapObj(common.MapObj):
 
                 # Merge points on 1st polygon
                 for pt2 in points1[1:]:
-                    if pt1.close_to(pt2, PRECISION):
+                    if pt1.close_to(pt2, precision):
                         points_to_merge1.append(pt2)
                 for pt in points_to_merge1:
                     points1.remove(pt)

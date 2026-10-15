@@ -10,12 +10,8 @@ geometry state so conversions are independent and testable.
 
 ## Prioritized recommendations
 
-1. **Make conversion state instance-owned.** Move `POINTS`, `POLYGONS`,
-   `MULTIPOLYGONS`, and `PARENTS` out of module scope into a conversion/model
-   context. Give each conversion independent ID allocation and ownership, and
-   define map combination without cross-instance registry side effects.
 2. **Split `common.py` by responsibility.** A reasonable class/module layout:
-   `GeometryContext` plus `Point`/`Polygon`/`MultiPolygon` in a model module;
+   `Point`/`Polygon`/`MultiPolygon` in a model module;
    a GeoJSON reader and land metadata/configuration module; geometry transforms
    and topology operations in separate modules; and an SVG renderer/output
    module. Retain a small `Converter`/pipeline facade.

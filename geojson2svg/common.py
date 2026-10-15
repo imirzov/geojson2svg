@@ -46,7 +46,7 @@ from abc import ABC
 import json
 import os
 import sys
-from typing import Self
+from typing import Self, Any
 import unidecode
 
 import settings
@@ -54,20 +54,26 @@ from settings import report as r
 from geojson2svg.lands import Land
 
 PARENTS: dict[int, str] = dict()  # id_: name
-POINTS: dict[int, Point] = dict()  # id_: (x, y)
-POLYGONS: dict[int, Polygon] = dict()  # id_: Polygon
+POINTS: dict[str | int, Point] = dict()  # id_: (x, y)
+POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
 
 
-class Obj:
+class Obj(ABC):
 
     def __init__(self) -> None:
         self.id_ = 0
-        self.children: list[int] = list()
+        self.children: list[int | str] = list()
         self.xmin = 0
         self.xmax = 0
         self.ymin = 0
         self.ymax = 0
+
+    def get_bbox(self) -> tuple[float, float, float, float]:
+        return get_obj_bbox(self)
+
+    def get_children(self) -> Any:
+        pass
 
 
 class Point(Obj):
@@ -134,10 +140,11 @@ class Polygon(Obj, ABC):
     def __init__(self, coordinates: list[tuple[float, float]]) -> None:
         self.id_ = len(POLYGONS)
         assert is_polygon(coordinates)
-        self.children: list[int] = list()  # list of point ids
+        # self.children: list[int] = list()  # list of point ids
         self.set_children(coordinates)
         self.converted = False
-        self.xmin, self.xmax, self.ymin, self.ymax = get_bbox(self)
+        self.xmin, self.xmax, self.ymin, self.ymax =\
+            get_bbox(self.get_children())
 
     def set_children(self, coordinates: list[tuple[float, float]]) -> None:
         for x, y in coordinates:
@@ -179,9 +186,9 @@ class MultiPolygon(Obj, ABC):
     def __init__(self, path_id: str,
                  coordinates: list[list[list[tuple[float, float]]]]) -> None:
         self.path_id = path_id
-        self.children: list[int] = list()
+        # self.children: list[int] = list()
         self.set_children(coordinates)
-        self.xmin, self.xmax, self.ymin, self.ymax = get_bbox(self)
+        self.xmin, self.xmax, self.ymin, self.ymax = get_obj_bbox(self)
 
     def set_children(self, coordinates:
                      list[list[list[tuple[float, float]]]]) -> None:
@@ -199,7 +206,7 @@ class MultiPolygon(Obj, ABC):
         return list([POLYGONS[id_] for id_ in self.children])
 
 
-class MapObj:
+class MapObj(Obj):
 
     def __init__(self, klass: type[Land]) -> None:
         os.chdir(os.path.dirname(__file__))
@@ -207,7 +214,7 @@ class MapObj:
         self.svg_fpath = os.path.join(
             settings.files,
             os.path.splitext(self.klass.output_name)[0] + '.svg')
-        self.children: list[str] = []
+        # self.children: list[str] = []
         self.read_children()
         r.info('{}x{}, {} paths, {} points before, {}\n'
                .format(self.klass.w, self.klass.h,
@@ -256,7 +263,7 @@ class MapObj:
         """Convert latitude and longitude GeoJson coords
         to Land's width (w) and height (h) in pixels.
         """
-        min_x, max_x, min_y, max_y = get_bbox(self)
+        min_x, max_x, min_y, max_y = get_obj_bbox(self)
         for mp in self.get_children():
             for pg in mp.get_children():
                 pg.convert_coords_to_px(min_x, max_x, min_y, max_y,
@@ -408,7 +415,7 @@ def is_polygon(coordinates: list[tuple[float, float]]) -> bool:
     return True
 
 
-def get_bbox(obj: Polygon | MultiPolygon | MapObj) \
+def get_obj_bbox(obj: Obj | Polygon | MultiPolygon | MapObj) \
         -> tuple[float, float, float, float]:
     """Calculate bounding box: min and max X and Y coordinates."""
     min_x = 1e+9
@@ -420,6 +427,20 @@ def get_bbox(obj: Polygon | MultiPolygon | MapObj) \
         max_x = max(ch.xmax, max_x)
         min_y = min(ch.ymin, min_y)
         max_y = max(ch.ymax, max_y)
+    return min_x, max_x, min_y, max_y
+
+
+def get_bbox(points: list[Point]) -> tuple[float, float, float, float]:
+    """Calculate bounding box: min and max X and Y coordinates."""
+    min_x = 1e+9
+    min_y = 1e+9
+    max_x = -1e+9
+    max_y = -1e+9
+    for pt in points:
+        min_x = min(pt.x, min_x)
+        max_x = max(pt.x, max_x)
+        min_y = min(pt.y, min_y)
+        max_y = max(pt.y, max_y)
     return min_x, max_x, min_y, max_y
 
 

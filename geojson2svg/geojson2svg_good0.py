@@ -3,8 +3,6 @@
 
 from geojson2svg import common
 
-PRECISION: int = 2  # px
-
 
 class MapObj(common.MapObj):
 

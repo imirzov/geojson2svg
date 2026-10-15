@@ -37,7 +37,7 @@ class MapObj(common.MapObj):
         self.count_points()
         self.generate_svg_code()
 
-    def collapse_border_gaps(self, precision: int = PRECISION) -> None:
+    def collapse_border_gaps(self, precision: int) -> None:
         """Find mergable neighbour points betwee multipolygons.
         TODO The same problem as in _good1 alg. Additionally
         this alg does not merge borders fully - white triangles remain.
@@ -46,9 +46,9 @@ class MapObj(common.MapObj):
         # Find overlapping multipolygons
         mergable_multipolygon_pairs: \
             list[tuple[MultiPolygon, MultiPolygon]] = []
-        for i in range(len(self.get_children())-1):
+        for i in range(len(self.get_children()) - 1):
             mp1 = self.get_children()[i]
-            for j in range(i+1, len(self.get_children())):
+            for j in range(i + 1, len(self.get_children())):
                 mp2 = self.get_children()[j]
                 if common.is_overlapping_with(mp1, mp2):
                     mergable_multipolygon_pairs.append((mp1, mp2))
@@ -79,7 +79,7 @@ class MapObj(common.MapObj):
                         break
             for pt2 in points2:
                 for pt1 in points1:
-                    if pt2.close_to(pt1, PRECISION):
+                    if pt2.close_to(pt1, precision):
                         merge_cloud2.append(pt2)
                         break
             collapse_border_gaps(merge_cloud1, merge_cloud2)

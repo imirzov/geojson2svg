@@ -89,7 +89,7 @@ class MapObj(common.MapObj):
         self.count_points()
         self.generate_svg_code()
 
-    def get_border_point_clouds(self, precision: int = PRECISION) \
+    def get_border_point_clouds(self, precision: int) \
             -> list[tuple[list[Point], list[Point]]]:
         """Find mergable neighbour points between multipolygons.
         TODO The same problem as in alg _good1 and _good2.

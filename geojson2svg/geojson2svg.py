@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from geojson2svg import common
-from geojson2svg.common import Point
+from geojson2svg.common import Point, get_bbox
 
 PRECISION: int = 1  # px
 
@@ -36,20 +36,6 @@ def recursive_quad_merge(points: list[Point]) -> None:
                         pt.y = q[0].y
                         pt.merged = True
                 q[0].merged = True
-
-
-def get_bbox(points: list[Point]) -> tuple[float, float, float, float]:
-    """Calculate bounding box: min and max X and Y coordinates."""
-    min_x = 1e+9
-    min_y = 1e+9
-    max_x = -1e+9
-    max_y = -1e+9
-    for pt in points:
-        min_x = min(pt.x, min_x)
-        max_x = max(pt.x, max_x)
-        min_y = min(pt.y, min_y)
-        max_y = max(pt.y, max_y)
-    return min_x, max_x, min_y, max_y
 
 
 class MapObj(common.MapObj):
