@@ -4,7 +4,7 @@
 """Test for good4 variant."""
 
 from geojson2svg.geojson2svg_good4 \
-    import (MapObj, PRECISION, tie_border_points,
+    import (MapObj, tie_border_points,
             remove_points_without_pair, check_order)
 from geojson2svg.lands import Land
 
@@ -93,11 +93,11 @@ def test() -> None:
     Coordinates are measured from top left display corner.
     """
     m = MapObj(Test1)
-    m.round_point_coordinates(PRECISION)
-    m.remove_close_points(PRECISION)
-    for points1, points2 in m.get_border_points(PRECISION):
-        points1, points2 = tie_border_points(points1, points2, PRECISION)
-        points2, points1 = tie_border_points(points2, points1, PRECISION)
+    m.round_point_coordinates(m.PRECISION)
+    m.remove_close_points(m.PRECISION)
+    for points1, points2 in m.get_border_points(m.PRECISION):
+        points1, points2 = tie_border_points(points1, points2, m.PRECISION)
+        points2, points1 = tie_border_points(points2, points1, m.PRECISION)
         points1 = remove_points_without_pair(points1)
         points2 = remove_points_without_pair(points2)
         points1 = check_order(points1)

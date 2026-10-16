@@ -5,8 +5,6 @@ from settings import report as r
 from geojson2svg import common
 from geojson2svg.common import Point, Polygon, MultiPolygon
 
-PRECISION: int = 3  # px
-
 
 def collapse_border_gaps(points1: list[Point],
                          points2: list[Point],
@@ -79,13 +77,15 @@ def collapse_border_gaps(points1: list[Point],
 
 class MapObj(common.MapObj):
 
+    PRECISION: int = 3  # px
+
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
         self.convert_coords_to_px()
-        self.round_point_coordinates(PRECISION)
-        self.remove_close_points(PRECISION)
-        for points1, points2 in self.get_border_point_clouds(PRECISION):
-            collapse_border_gaps(points1, points2, PRECISION)
+        self.round_point_coordinates(self.PRECISION)
+        self.remove_close_points(self.PRECISION)
+        for points1, points2 in self.get_border_point_clouds(self.PRECISION):
+            collapse_border_gaps(points1, points2, self.PRECISION)
         self.count_points()
         self.generate_svg_code()
 
@@ -94,7 +94,6 @@ class MapObj(common.MapObj):
         """Find mergable neighbour points between multipolygons.
         TODO The same problem as in alg _good1 and _good2.
         """
-
         # Find overlapping multipolygons
         mergable_multipolygon_pairs: \
             list[tuple[MultiPolygon, MultiPolygon]] = []

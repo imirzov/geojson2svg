@@ -4,8 +4,6 @@
 from geojson2svg import common
 from geojson2svg.common import Point, Polygon, MultiPolygon
 
-PRECISION: int = 3  # px
-
 
 def collapse_border_gaps(points1: list[Point],
                          points2: list[Point]) -> None:
@@ -28,12 +26,14 @@ def collapse_border_gaps(points1: list[Point],
 
 class MapObj(common.MapObj):
 
+    PRECISION: int = 3  # px
+
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
         self.convert_coords_to_px()
-        self.round_point_coordinates(PRECISION)  # !important!
-        self.remove_close_points(PRECISION)  # !important!
-        self.collapse_border_gaps(PRECISION)
+        self.round_point_coordinates(self.PRECISION)  # !important!
+        self.remove_close_points(self.PRECISION)  # !important!
+        self.collapse_border_gaps(self.PRECISION)
         self.count_points()
         self.generate_svg_code()
 

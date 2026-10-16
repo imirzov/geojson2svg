@@ -4,15 +4,15 @@
 from geojson2svg import common
 from geojson2svg.common import Point, Polygon, MultiPolygon
 
-PRECISION: int = 3  # px
-
 
 class MapObj(common.MapObj):
 
+    PRECISION: int = 3  # px
+
     def run(self) -> None:
         self.convert_coords_to_px()
-        self.collapse_border_gaps(PRECISION)
-        self.remove_close_points(PRECISION)
+        self.collapse_border_gaps(self.PRECISION)
+        self.remove_close_points(self.PRECISION)
         self.round_point_coordinates(1)
         self.remove_needles()
         self.count_points()

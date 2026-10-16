@@ -7,9 +7,6 @@ from settings import report as r
 from geojson2svg import common
 from geojson2svg.common import Point, Polygon, MultiPolygon
 
-PRECISION: int = 3  # px
-BORDER_UTMOST_POINTS: list[Point] = []
-
 
 def remove_points_without_pair(points: list[Point]) -> list[Point]:
     removed_points: list[Point] = []
@@ -77,12 +74,15 @@ def check_order(points: list[Point]) -> None | list[Point]:
 
 class MapObj(common.MapObj):
 
+    PRECISION: int = 3  # px
+    BORDER_UTMOST_POINTS: list[Point] = []
+
     def run(self) -> None:
         """NOTE For performance remove duplicated points before
         the border collapse!
         """
         self.convert_coords_to_px()
-        self.round_point_coordinates(PRECISION)
+        self.round_point_coordinates(self.PRECISION)
         self.filter_points_with_same_coords()
         self.generate_svg_code()
 
@@ -97,7 +97,7 @@ class MapObj(common.MapObj):
                     pt1.x = (pt0.x + pt2.x) / 2
                     pt1.y = (pt0.y + pt2.y) / 2
 
-    def get_border_points(self, precision: int = PRECISION) \
+    def get_border_points(self, precision: int) \
             -> list[tuple[list[Point], list[Point]]]:
         """Find mergable neighbour points between multipolygons."""
 
@@ -145,12 +145,12 @@ class MapObj(common.MapObj):
             if len(border_points1) >= 2:
                 border_points1[0].utmost = True
                 border_points1[-1].utmost = True
-                BORDER_UTMOST_POINTS.extend([border_points1[0],
-                                             border_points1[-1]])
+                self.BORDER_UTMOST_POINTS.extend([border_points1[0],
+                                                  border_points1[-1]])
             if len(border_points2) >= 2:
                 border_points2[0].utmost = True
                 border_points2[-1].utmost = True
-                BORDER_UTMOST_POINTS.extend([border_points2[0],
-                                             border_points2[-1]])
+                self.BORDER_UTMOST_POINTS.extend([border_points2[0],
+                                                  border_points2[-1]])
 
         return border_points_list
