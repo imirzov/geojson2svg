@@ -222,7 +222,7 @@ class MultiPolygon(Obj, ABC):
         return list([POLYGONS[id_] for id_ in self.children])
 
 
-class MapObj(Obj):
+class MapObj(Obj, ABC):
 
     def __init__(self, klass: type[Land]) -> None:
         super().__init__()

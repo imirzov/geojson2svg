@@ -6,6 +6,7 @@ import sys
 import inspect
 import logging
 from pathlib import Path
+
 import settings
 from settings import report as r
 
