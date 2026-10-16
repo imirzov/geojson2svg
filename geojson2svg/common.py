@@ -42,11 +42,11 @@ TODO Read svg_code from a file.
 
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 import json
 import os
 import sys
-from typing import Self, Any
+from typing import Self, Any, override
 import unidecode
 
 import settings
@@ -59,37 +59,45 @@ POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
 
 
+class BBox:
+
+    def __init__(self,
+                 xmin: float = 0, xmax: float = 0,
+                 ymin: float = 0, ymax: float = 0) -> None:
+        self.xmin = xmin
+        self.xmax = xmax
+        self.ymin = ymin
+        self.ymax = ymax
+        self.dx = xmax - xmin
+        self.dy = ymax - ymin
+
+    def __add__(self, other: BBox) -> BBox:
+        return BBox(
+            xmin=min(self.xmin, other.xmin),
+            xmax=max(self.xmax, other.xmax),
+            ymin=min(self.ymin, other.ymin),
+            ymax=max(self.ymax, other.ymax)
+        )
+
+    def __str__(self) -> str:
+        return f'BBox(xmin={self.xmin}, xmax={self.xmax}, ' \
+                    f'ymin={self.ymin}, ymax={self.ymax})'
+
+
 class Obj(ABC):
 
     def __init__(self) -> None:
         self.id_ = 0
         self.children: list[int | str] = list()
-        self.xmin = 0
-        self.xmax = 0
-        self.ymin = 0
-        self.ymax = 0
+        self.bbox = BBox()
 
-    def get_bbox(self) -> tuple[float, float, float, float]:
-        if isinstance(self, Point):
-            return float(self.x), float(self.x), float(self.y), float(self.y)
+    def set_bbox(self) -> None:
+        for ch in self.get_children():
+            self.bbox += ch.bbox
 
-        children = self.get_children()
-        if not children:
-            raise ValueError('Cannot calculate a bounding box'
-                             ' for an empty object.')
-
-        min_x, max_x, min_y, max_y = children[0].get_bbox()
-        for child in children[1:]:
-            child_min_x, child_max_x, child_min_y, child_max_y = (
-                child.get_bbox())
-            min_x = min(min_x, child_min_x)
-            max_x = max(max_x, child_max_x)
-            min_y = min(min_y, child_min_y)
-            max_y = max(max_y, child_max_y)
-        return min_x, max_x, min_y, max_y
-
+    @abstractmethod
     def get_children(self) -> list[Any]:
-        return []
+        ...
 
 
 class Point(Obj):
@@ -101,29 +109,19 @@ class Point(Obj):
         self.x = x
         self.y = y
         self.parent = parent
-        self.xmin = self.x
-        self.xmax = self.x
-        self.ymin = self.y
-        self.ymax = self.y
+        self.bbox = BBox(x, x, y, y)
         self.merged = False
         self.tied_to = sys.maxsize
         self.utmost = False
 
-    def set_parent(self, parent: Polygon) -> None:
-        self.parent = parent
+    @override
+    def get_children(self) -> list[Any]:
+        return []
 
     def round(self, precision: int) -> None:
         self.x = round(self.x // precision * precision)
         self.y = round(self.y // precision * precision)
-        self.xmin = self.x
-        self.xmax = self.x
-        self.ymin = self.y
-        self.ymax = self.y
-
-    def squared_distance_to(self, pt: Self) -> float:
-        if self.id_ == pt.id_:
-            return 1e+9
-        return (pt.x - self.x)**2 + (pt.y - self.y)**2
+        self.bbox = BBox(self.x, self.x, self.y, self.y)
 
     def close_to(self, pt: Self, precision: int) -> bool:
         if abs(self.x - pt.x) > precision:
@@ -132,41 +130,28 @@ class Point(Obj):
             return False
         return True
 
-    def delete(self) -> None:
-        if not self.utmost:
-            pg = self.parent
-            if pg is None:
-                r.warning(f'Parent polygon is None for point {self.id_}')
-                return
-            pg.remove_point(self.id_)
-            if self.tied_to < sys.maxsize:
-                pg = POINTS[self.tied_to].parent
-                if pg is None:
-                    r.warning('Parent polygon is None '
-                              f'for tied point {self.tied_to}')
-                    return
-                pg.remove_point(self.tied_to)
-
     def __str__(self) -> str:
         return 'Point {} x={} y={} tied_to={} utmost={}' \
             .format(self.id_, self.x, self.y, self.tied_to, self.utmost)
 
 
-class Polygon(Obj, ABC):
+class Polygon(Obj):
+    """Parent of Point, consists of multiple Point objects."""
 
     def __init__(self, coordinates: list[tuple[float, float]]) -> None:
         super().__init__()
         self.id_ = len(POLYGONS)
-        assert is_polygon(coordinates)
         self.set_children(coordinates)
+        self.set_bbox()
         self.converted = False
-        self.xmin, self.xmax, self.ymin, self.ymax = self.get_bbox()
 
     def set_children(self, coordinates: list[tuple[float, float]]) -> None:
+        assert is_polygon(coordinates)
         for x, y in coordinates:
             new_pt = create_point(x, y, self)
             self.children.append(new_pt.id_)
 
+    @override
     def get_children(self) -> list[Point]:
         return list([POINTS[id_] for id_ in self.children])
 
@@ -186,25 +171,25 @@ class Polygon(Obj, ABC):
                 if b:
                     self.children.remove(id_)
 
-    def convert_coords_to_px(self,
-                             min_x: float, max_x: float,
-                             min_y: float, max_y: float,
+    def convert_coords_to_px(self, map_bbox: BBox,
                              w: float, h: float) -> None:
-        if not self.converted and max_x != min_x and max_y != min_y:
+        if not self.converted and map_bbox.xmax != map_bbox.xmin \
+                and map_bbox.ymax != map_bbox.ymin:
             for p in self.get_children():
-                p.x = (p.x - min_x) / (max_x - min_x) * w
-                p.y = (max_y - p.y) / (max_y - min_y) * h
+                p.x = (p.x - map_bbox.xmin) / map_bbox.dx * w
+                p.y = (map_bbox.ymax - p.y) / map_bbox.dy * h
         self.converted = True
 
 
-class MultiPolygon(Obj, ABC):
+class MultiPolygon(Obj):
+    """Parent of Polygon, consists of multiple Polygon objects."""
 
     def __init__(self, path_id: str,
                  coordinates: list[list[list[tuple[float, float]]]]) -> None:
         super().__init__()
         self.path_id = path_id
         self.set_children(coordinates)
-        self.xmin, self.xmax, self.ymin, self.ymax = self.get_bbox()
+        self.set_bbox()
 
     def set_children(self, coordinates:
                      list[list[list[tuple[float, float]]]]) -> None:
@@ -218,11 +203,13 @@ class MultiPolygon(Obj, ABC):
                 self.children.append(pg.id_)
         assert len(self.children), 'MultiPolygon has no children!'
 
+    @override
     def get_children(self) -> list[Polygon]:
         return list([POLYGONS[id_] for id_ in self.children])
 
 
-class MapObj(Obj, ABC):
+class MapObj(Obj):
+    """Parent of MultiPolygon, consists of multiple MultiPolygon objects."""
 
     def __init__(self, klass: type[Land]) -> None:
         super().__init__()
@@ -232,10 +219,16 @@ class MapObj(Obj, ABC):
             settings.files,
             os.path.splitext(self.klass.output_name)[0] + '.svg')
         self.read_children()
-        r.info('{}x{}, {} paths, {} points before, {}\n'
-               .format(self.klass.w, self.klass.h,
-                       len(self.children), len(POINTS),
-                       unidecode.unidecode(self.klass.input_name)))
+        self.set_bbox()
+        r.info(str(self))
+
+    def __str__(self) -> str:
+        input_name = unidecode.unidecode(self.klass.input_name)
+        return f'{input_name}\n' \
+            + f'{self.klass.w}x{self.klass.h}\n' \
+            + f'{self.bbox}\n' \
+            + f'{len(self.children)} paths\n' \
+            + f'{len(POINTS)} points before\n'
 
     def read_children(self) -> None:
         """Read polygon coordinates:
@@ -272,6 +265,7 @@ class MapObj(Obj, ABC):
             mp = create_multipolygon(path_id, coordinates)
             self.children.append(mp.path_id)
 
+    @override
     def get_children(self) -> list[MultiPolygon]:
         return list([MULTIPOLYGONS[id_] for id_ in self.children])
 
@@ -279,11 +273,9 @@ class MapObj(Obj, ABC):
         """Convert latitude and longitude GeoJson coords
         to Land's width (w) and height (h) in pixels.
         """
-        min_x, max_x, min_y, max_y = self.get_bbox()
         for mp in self.get_children():
             for pg in mp.get_children():
-                pg.convert_coords_to_px(min_x, max_x, min_y, max_y,
-                                        self.klass.w, self.klass.h)
+                pg.convert_coords_to_px(self.bbox, self.klass.w, self.klass.h)
 
     def round_point_coordinates(self, precision: int) -> None:
         """Round all point coordinates to precision."""
@@ -431,20 +423,6 @@ def is_polygon(coordinates: list[tuple[float, float]]) -> bool:
     return True
 
 
-def get_bbox(points: list[Point]) -> tuple[float, float, float, float]:
-    """Calculate bounding box: min and max X and Y coordinates."""
-    min_x = 1e+9
-    min_y = 1e+9
-    max_x = -1e+9
-    max_y = -1e+9
-    for pt in points:
-        min_x = min(pt.x, min_x)
-        max_x = max(pt.x, max_x)
-        min_y = min(pt.y, min_y)
-        max_y = max(pt.y, max_y)
-    return min_x, max_x, min_y, max_y
-
-
 def merge_points_to(points: list[Point], point: Point) -> None:
     for pt in points:
         pt.x = point.x
@@ -458,14 +436,18 @@ def is_overlapping_with(obj1: Obj, obj2: Obj) -> bool:
         c1 = False
         c2 = False
 
-        if obj1.xmin <= obj2.xmin and obj2.xmin <= obj1.xmax:
+        if obj1.bbox.xmin <= obj2.bbox.xmin \
+                and obj2.bbox.xmin <= obj1.bbox.xmax:
             c1 = True
-        if obj1.xmin <= obj2.xmax and obj2.xmax <= obj1.xmax:
+        if obj1.bbox.xmin <= obj2.bbox.xmax \
+                and obj2.bbox.xmax <= obj1.bbox.xmax:
             c1 = True
 
-        if obj1.ymin <= obj2.ymin and obj2.ymin <= obj1.ymax:
+        if obj1.bbox.ymin <= obj2.bbox.ymin \
+                and obj2.bbox.ymin <= obj1.bbox.ymax:
             c2 = True
-        if obj1.ymin <= obj2.ymax and obj2.ymax <= obj1.ymax:
+        if obj1.bbox.ymin <= obj2.bbox.ymax \
+                and obj2.bbox.ymax <= obj1.bbox.ymax:
             c2 = True
 
         if c1 and c2:
