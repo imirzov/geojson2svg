@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from geojson2svg import common
-from geojson2svg.common import Point, Polygon, MultiPolygon
+from geojson2svg.common import Point, \
+    find_overlapping_multipolygons, find_overlapping_polygons
 
 
 def collapse_border_gaps(points1: list[Point],
@@ -13,11 +14,13 @@ def collapse_border_gaps(points1: list[Point],
         if not points1 or not points2:
             break
         for pt in points1:
-            pts = sorted(points2, key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
+            pts = sorted(points2,
+                         key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
             pt.x = pts[0].x
             pt.y = pts[0].y
         for pt in points2:
-            pts = sorted(points1, key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
+            pts = sorted(points1,
+                         key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
             pt.x = pts[0].x
             pt.y = pts[0].y
         l1 = len(set([p.x for p in points1] + [p.y for p in points1]))
@@ -42,25 +45,14 @@ class MapObj(common.MapObj):
         TODO The same problem as in _good1 alg. Additionally
         this alg does not merge borders fully - white triangles remain.
         """
-
         # Find overlapping multipolygons
-        mergable_multipolygon_pairs: \
-            list[tuple[MultiPolygon, MultiPolygon]] = []
-        for i in range(len(self.get_children()) - 1):
-            mp1 = self.get_children()[i]
-            for j in range(i + 1, len(self.get_children())):
-                mp2 = self.get_children()[j]
-                if common.is_overlapping_with(mp1, mp2):
-                    mergable_multipolygon_pairs.append((mp1, mp2))
+        multipolygons = self.get_children()
+        mergable_multipolygon_pairs =\
+            find_overlapping_multipolygons(multipolygons)
 
         # Find overlapping polygons
-        mergable_polygon_pairs: \
-            list[tuple[Polygon, Polygon]] = []
-        for mp1, mp2 in mergable_multipolygon_pairs:
-            for pg1 in mp1.get_children():
-                for pg2 in mp2.get_children():
-                    if common.is_overlapping_with(pg1, pg2):
-                        mergable_polygon_pairs.append((pg1, pg2))
+        mergable_polygon_pairs = \
+            find_overlapping_polygons(mergable_multipolygon_pairs)
 
         # Find neighbour points
         counter = 0

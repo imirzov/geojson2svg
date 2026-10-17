@@ -476,6 +476,31 @@ def filter_points_with_same_coords(points: list[Point]) -> list[Point]:
     return filtered_points
 
 
+def find_overlapping_multipolygons(
+        multipolygons: list[MultiPolygon]) \
+            -> list[tuple[MultiPolygon, MultiPolygon]]:
+    overlapping_pairs: list[tuple[MultiPolygon, MultiPolygon]] = []
+    for i in range(len(multipolygons) - 1):
+        mp1 = multipolygons[i]
+        for j in range(i + 1, len(multipolygons)):
+            mp2 = multipolygons[j]
+            if is_overlapping_with(mp1, mp2):
+                overlapping_pairs.append((mp1, mp2))
+    return overlapping_pairs
+
+
+def find_overlapping_polygons(
+        multipolygon_pairs: list[tuple[MultiPolygon, MultiPolygon]]) \
+            -> list[tuple[Polygon, Polygon]]:
+    mergable_polygon_pairs: list[tuple[Polygon, Polygon]] = []
+    for mp1, mp2 in multipolygon_pairs:
+        for pg1 in mp1.get_children():
+            for pg2 in mp2.get_children():
+                if is_overlapping_with(pg1, pg2):
+                    mergable_polygon_pairs.append((pg1, pg2))
+    return mergable_polygon_pairs
+
+
 """
 def remove_unneeded_properties(feature, klass) -> dict:
     # Remove unneeded properties from geojson feature

@@ -5,7 +5,8 @@ import sys
 
 from settings import report as r
 from geojson2svg import common
-from geojson2svg.common import Point, Polygon, MultiPolygon
+from geojson2svg.common import Point, \
+    find_overlapping_multipolygons, find_overlapping_polygons
 
 
 def remove_points_without_pair(points: list[Point]) -> list[Point]:
@@ -42,13 +43,13 @@ def tie_border_points(points1: list[Point],
     return points1, points2
 
 
-def swap_points(_id1: int, _id2: int) -> None:
-    pt1 = common.POINTS[_id1]
-    pt2 = common.POINTS[_id2]
-    pt1.id_ = _id2
-    pt2.id_ = _id1
-    common.POINTS[_id1] = pt2
-    common.POINTS[_id2] = pt1
+def swap_points(id1: int, id2: int) -> None:
+    pt1 = common.POINTS[id1]
+    pt2 = common.POINTS[id2]
+    pt1.id_ = id2
+    pt2.id_ = id1
+    common.POINTS[id1] = pt2
+    common.POINTS[id2] = pt1
 
 
 def check_order(points: list[Point]) -> None | list[Point]:
@@ -102,23 +103,13 @@ class MapObj(common.MapObj):
         """Find mergable neighbour points between multipolygons."""
 
         # Find overlapping multipolygons
-        mergable_multipolygon_pairs: \
-            list[tuple[MultiPolygon, MultiPolygon]] = []
-        for i in range(len(self.get_children()) - 1):
-            mp1 = self.get_children()[i]
-            for j in range(i + 1, len(self.get_children())):
-                mp2 = self.get_children()[j]
-                if common.is_overlapping_with(mp1, mp2):
-                    mergable_multipolygon_pairs.append((mp1, mp2))
+        multipolygons = self.get_children()
+        mergable_multipolygon_pairs =\
+            find_overlapping_multipolygons(multipolygons)
 
         # Find overlapping polygons
-        mergable_polygon_pairs: \
-            list[tuple[Polygon, Polygon]] = []
-        for mp1, mp2 in mergable_multipolygon_pairs:
-            for pg1 in mp1.get_children():
-                for pg2 in mp2.get_children():
-                    if common.is_overlapping_with(pg1, pg2):
-                        mergable_polygon_pairs.append((pg1, pg2))
+        mergable_polygon_pairs = \
+            find_overlapping_polygons(mergable_multipolygon_pairs)
 
         # Find neighbour points
         counter = 0
