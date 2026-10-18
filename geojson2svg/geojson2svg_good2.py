@@ -1,33 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from geojson2svg import common
-from geojson2svg.common import Point, \
+from geojson2svg.common import Point, Polygon, MapObj, \
     find_overlapping_multipolygons, find_overlapping_polygons
+from geojson2svg.utils import collapse_gap_1
 
 
-def collapse_border_gaps(points1: list[Point],
-                         points2: list[Point]) -> None:
-    l1 = 0
-    l2 = 1
-    while l1 != l2:
-        if not points1 or not points2:
-            break
-        for pt in points1:
-            pts = sorted(points2,
-                         key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
-            pt.x = pts[0].x
-            pt.y = pts[0].y
-        for pt in points2:
-            pts = sorted(points1,
-                         key=lambda p: (pt.x-p.x)**2 + (pt.y-p.y)**2)
-            pt.x = pts[0].x
-            pt.y = pts[0].y
-        l1 = len(set([p.x for p in points1] + [p.y for p in points1]))
-        l2 = len(set([p.x for p in points2] + [p.y for p in points2]))
-
-
-class MapObj(common.MapObj):
+class Good2(MapObj):
 
     PRECISION: int = 3  # px
 
@@ -36,15 +15,7 @@ class MapObj(common.MapObj):
         self.convert_coords_to_px()
         self.round_point_coordinates(self.PRECISION)  # !important!
         self.remove_close_points(self.PRECISION)  # !important!
-        self.collapse_border_gaps(self.PRECISION)
-        self.count_points()
-        self.generate_svg_code()
 
-    def collapse_border_gaps(self, precision: int) -> None:
-        """Find mergable neighbour points betwee multipolygons.
-        TODO The same problem as in _good1 alg. Additionally
-        this alg does not merge borders fully - white triangles remain.
-        """
         # Find overlapping multipolygons
         multipolygons = self.get_children()
         mergable_multipolygon_pairs =\
@@ -54,12 +25,21 @@ class MapObj(common.MapObj):
         mergable_polygon_pairs = \
             find_overlapping_polygons(mergable_multipolygon_pairs)
 
-        # Find neighbour points
+        self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
+        self.count_points()
+        self.generate_svg_code()
+
+    def collapse_gaps(self, mergable_polygon_pairs:
+                      list[tuple[Polygon, Polygon]],
+                      precision: int) -> None:
+        """Find mergable neighbour points between polygons.
+        NOTE Alg does not merge borders fully - white triangles remain.
+        """
         counter = 0
         for pg1, pg2 in mergable_polygon_pairs:
             counter += 1
-            points1 = pg1.get_children()
-            points2 = pg2.get_children()
+            points1 = pg1.get_points()
+            points2 = pg2.get_points()
             print(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
                   + ' '*8 + '\r', end='')
             merge_cloud1: list[Point] = []
@@ -74,4 +54,4 @@ class MapObj(common.MapObj):
                     if pt2.close_to(pt1, precision):
                         merge_cloud2.append(pt2)
                         break
-            collapse_border_gaps(merge_cloud1, merge_cloud2)
+            collapse_gap_1(merge_cloud1, merge_cloud2)

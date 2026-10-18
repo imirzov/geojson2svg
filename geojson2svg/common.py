@@ -49,6 +49,7 @@ import sys
 from typing import Self, Any, override
 import unidecode
 
+from filters import Round
 import settings
 from settings import report as r
 from geojson2svg.lands import Land
@@ -87,6 +88,7 @@ class BBox:
 class Obj(ABC):
 
     def __init__(self) -> None:
+        super().__init__()
         self.id_ = 0
         self.children: list[int | str] = list()
         self.bbox = BBox()
@@ -98,6 +100,12 @@ class Obj(ABC):
     @abstractmethod
     def get_children(self) -> list[Any]:
         ...
+
+    def get_points(self) -> list[Point]:
+        points: list[Point] = []
+        for obj in self.get_children():
+            points.extend(obj.get_points())
+        return points
 
 
 class Point(Obj):
@@ -118,6 +126,10 @@ class Point(Obj):
     def get_children(self) -> list[Any]:
         return []
 
+    @override
+    def get_points(self) -> list[Point]:
+        return []
+
     def round(self, precision: int) -> None:
         self.x = round(self.x // precision * precision)
         self.y = round(self.y // precision * precision)
@@ -133,6 +145,14 @@ class Point(Obj):
     def __str__(self) -> str:
         return 'Point {} x={} y={} tied_to={} utmost={}' \
             .format(self.id_, self.x, self.y, self.tied_to, self.utmost)
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Point):
+            return False
+        return self.x == other.x and self.y == other.y
+
+    def __hash__(self) -> int:
+        return hash((self.x, self.y))
 
 
 class Polygon(Obj):
@@ -279,11 +299,7 @@ class MapObj(Obj):
 
     def round_point_coordinates(self, precision: int) -> None:
         """Round all point coordinates to precision."""
-        assert type(precision) is int, 'Precision should be INT type.'
-        for mp in self.get_children():
-            for pg in mp.get_children():
-                for pt in pg.get_children():
-                    pt.round(precision)
+        Round(self.get_points()).apply(precision)
 
     def remove_needles(self) -> None:
         for mp in self.get_children():
@@ -430,6 +446,7 @@ def merge_points_to(points: list[Point], point: Point) -> None:
 
 
 def is_overlapping_with(obj1: Obj, obj2: Obj) -> bool:
+    # TODO rewrite as Obj method
 
     def f(obj1: Obj, obj2: Obj) -> bool:
         # Conditions:
