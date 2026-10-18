@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from geojson2svg.common import (
-    Point, Polygon, MapObj, find_overlapping_multipolygons,
+    Point, Polygon, find_overlapping_multipolygons,
     find_overlapping_polygons, merge_points_to)
+from geojson2svg.mapobj import MapObj
 from geojson2svg.utils import (
     recursive_quad_merge, collapse_gap_1, collapse_gap_2)
 
