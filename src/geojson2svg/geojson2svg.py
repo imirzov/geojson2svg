@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from geojson2svg.common import (
-    Point, Polygon, find_overlapping_multipolygons,
-    find_overlapping_polygons, merge_points_to)
+from geojson2svg.point import Point, merge_points_to
+from geojson2svg.pg import Polygon
+from geojson2svg.mpg import find_overlapping_multipolygons
 from geojson2svg.mapobj import MapObj
+from geojson2svg.common import find_overlapping_polygons
 from geojson2svg.utils import (
     recursive_quad_merge, collapse_gap_1, collapse_gap_2)
 

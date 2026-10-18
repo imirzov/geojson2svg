@@ -4,7 +4,7 @@
 
 import unittest
 
-from geojson2svg.common import Point
+from geojson2svg.point import Point
 
 
 class TestPoint(unittest.TestCase):

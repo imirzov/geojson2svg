@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-from geojson2svg.common import Point, BBox, merge_points_to
+from geojson2svg.bbox import BBox
+from geojson2svg.point import Point, merge_points_to
 from settings import report as r
 
 

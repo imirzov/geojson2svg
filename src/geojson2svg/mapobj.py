@@ -9,12 +9,13 @@ from typing import Self, override
 import unidecode
 
 from geojson2svg.filters import Round
-from geojson2svg.common import Point
+from geojson2svg.common import PARENTS
+from geojson2svg.obj import Obj
+from geojson2svg.lands import Land
+from geojson2svg.point import POINTS, Point
+from geojson2svg.mpg import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
 from settings import report as r
-from geojson2svg.lands import Land
-from geojson2svg.common import (
-    Obj, MultiPolygon, PARENTS, POINTS, MULTIPOLYGONS, create_multipolygon)
 
 
 class MapObj(Obj):
@@ -77,6 +78,13 @@ class MapObj(Obj):
     @override
     def get_children(self) -> list[MultiPolygon]:
         return list([MULTIPOLYGONS[id_] for id_ in self.children])
+
+    @override
+    def get_points(self) -> list[Point]:
+        points: list[Point] = []
+        for mpg in self.get_children():
+            points.extend(mpg.get_points())
+        return points
 
     def convert_coords_to_px(self) -> None:
         """Convert latitude and longitude GeoJson coords

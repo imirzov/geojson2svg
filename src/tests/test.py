@@ -5,10 +5,11 @@
 
 import sys
 
+from geojson2svg.point import POINTS, Point
+from geojson2svg.pg import Polygon
+from geojson2svg.mpg import find_overlapping_multipolygons
+from geojson2svg.common import find_overlapping_polygons
 from geojson2svg.geojson2svg import Good4 as MapObj
-from geojson2svg.common import \
-    (POINTS, Point, Polygon,
-        find_overlapping_multipolygons, find_overlapping_polygons)
 from geojson2svg.lands import Land
 from settings import report as r
 

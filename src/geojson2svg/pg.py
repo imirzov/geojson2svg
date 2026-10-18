@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
+from typing import override
+
+from geojson2svg.bbox import BBox
+from geojson2svg.obj import Obj
+from geojson2svg.point import POINTS, Point, create_point
+from settings import report as r
+
+POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
+
+
+class Polygon(Obj):
+    """Parent of Point, consists of multiple Point objects."""
+
+    def __init__(self, coordinates: list[tuple[float, float]]) -> None:
+        super().__init__()
+        self.id_ = len(POLYGONS)
+        self.set_children(coordinates)
+        self.set_bbox()
+        self.converted = False
+
+    def set_children(self, coordinates: list[tuple[float, float]]) -> None:
+        assert is_polygon(coordinates)
+        for x, y in coordinates:
+            new_pt = create_point(x, y, self)
+            self.children.append(new_pt.id_)
+
+    @override
+    def get_children(self) -> list[Point]:
+        return list([POINTS[id_] for id_ in self.children])
+
+    @override
+    def get_points(self) -> list[Point]:
+        return self.get_children()
+
+    def remove_point(self, id_: int) -> None:
+        a = id_ in POINTS
+        b = id_ in self.children
+        if not a:
+            r.warning(f'Point {id_} not found in POINTS.')
+        if not b:
+            r.warning(f'Polygon {self.id_} has no point {id_}')
+        if a:
+            pt = POINTS[id_]
+            if pt.utmost:
+                r.warning(f'Point {id_} is utmost and cannot be removed.')
+            else:
+                POINTS.pop(id_)
+                if b:
+                    self.children.remove(id_)
+
+    def convert_coords_to_px(self, map_bbox: BBox,
+                             w: float, h: float) -> None:
+        if not self.converted and map_bbox.xmax != map_bbox.xmin \
+                and map_bbox.ymax != map_bbox.ymin:
+            for p in self.get_children():
+                p.x = (p.x - map_bbox.xmin) / map_bbox.dx * w
+                p.y = (map_bbox.ymax - p.y) / map_bbox.dy * h
+        self.converted = True
+
+
+def create_polygon(coordinates: list[tuple[float, float]] = []) -> Polygon:
+    pg = Polygon(coordinates)
+    POLYGONS[pg.id_] = pg
+    return pg
+
+
+def is_polygon(coordinates: list[tuple[float, float]]) -> bool:
+    if type(coordinates) is not list:
+        return False
+    for coords in coordinates:
+        if len(coords) != 2:
+            return False
+        for c in coords:
+            if type(c) not in [int, float]:
+                return False
+    return True
