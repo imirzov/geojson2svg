@@ -5,7 +5,7 @@
 
 import sys
 
-from geojson2svg.geojson2svg_good4 import MapObj
+from geojson2svg.geojson2svg import Good4 as MapObj
 from geojson2svg.common import \
     (POINTS, Point, Polygon,
         find_overlapping_multipolygons, find_overlapping_polygons)

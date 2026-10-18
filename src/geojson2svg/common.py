@@ -49,7 +49,7 @@ import sys
 from typing import Self, Any, override
 import unidecode
 
-from filters import Round
+from geojson2svg.filters import Round
 import settings
 from settings import report as r
 from geojson2svg.lands import Land
