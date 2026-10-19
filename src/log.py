@@ -3,6 +3,7 @@
 
 import os
 import sys
+import time
 import inspect
 import logging
 from pathlib import Path
@@ -76,3 +77,29 @@ def initialize_logging(erase: bool = True, test: bool = False,
     t = settings.time_now()
     r.info(f'{s} {t}\n\n\n')
     return log_file
+
+
+def float_to_time_str(v: float) -> str:
+    return time.strftime('%H:%M:%S', time.gmtime(v))
+
+
+def get_time_delta(start: float) -> str:
+    """Return spent time delta in format hh:mm:ss.s."""
+    delta = time.perf_counter() - start
+    return float_to_time_str(delta)
+
+
+def log_time_delta(start: float, test: bool = False) -> str:
+    """Log spent time delta in format hh:mm:ss.s."""
+    parentframe = inspect.stack()[1][0]
+    module_info = inspect.getmodule(parentframe)
+    if module_info is not None:
+        time_delta = get_time_delta(start)
+        msg = module_info.__name__ + ' ' + time_delta
+        if module_info.__name__ != '__main__':
+            msg += '\n\n\n'
+        if not test:
+            r.info(msg)
+        return time_delta
+    else:
+        return ''

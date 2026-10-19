@@ -11,9 +11,9 @@ from pathlib import Path
 import re
 import unidecode
 
-SRC_DIR = Path(__file__).parent.resolve()
-files = Path(SRC_DIR / '..' / 'files').resolve()
-logs = Path(SRC_DIR / '..' / 'logs').resolve()
+src = Path(__file__).parent.resolve()
+files = Path(src.parent / 'files').resolve()
+logs = Path(src.parent / 'logs').resolve()
 
 for d in [logs, files]:
     if not d.exists():

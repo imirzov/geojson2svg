@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import glob
+import os
+from pathlib import Path
 
 from base.bbox import BBox
 from base.point import Point, merge_points_to
@@ -181,3 +184,23 @@ def compress(klass) -> None:
                   encoding=settings.encoding) as f:
             json.dump(geojson, f)
 """
+
+
+def glob_files(plist: list[str | Path],
+               recursive: bool = True) -> list[Path]:
+    """Glob list of files without directories.
+    Return list without duplicates.
+    NOTE glob() could return as files as directories.
+    """
+    str_list: list[str] = [str(p) for p in plist]
+    if recursive and '**' not in str_list:
+        raise Exception('Recursive glob requested, '
+                        'but "**" not in plist: ' + str(str_list))
+    if not recursive and '**' in str_list:
+        raise Exception('Non-recursive glob requested, '
+                        'but "**" is in plist: ' + str(str_list))
+    flist: set[Path] = set()
+    for path in glob.glob(os.sep.join(str_list), recursive=recursive):
+        if os.path.isfile(path):
+            flist.add(Path(path))
+    return list(flist)
