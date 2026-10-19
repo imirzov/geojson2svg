@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Self
 
-from geojson2svg.model.bbox import BBox
+from base.bbox import BBox
 
 
 class Obj(ABC):

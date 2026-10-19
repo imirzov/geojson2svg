@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from geojson2svg.model.point import Point, merge_points_to
-from geojson2svg.model.polygon import Polygon
-from geojson2svg.model.multipolygon import find_overlapping_multipolygons
-from geojson2svg.model.mapobj import MapObj
-from geojson2svg.common import find_overlapping_polygons
-from geojson2svg.utils import (
-    recursive_quad_merge, collapse_gap_1, collapse_gap_2)
+from base.point import Point, merge_points_to
+from base.polygon import Polygon, find_overlapping_polygons
+from base.multipolygon import find_overlapping_multipolygons
+from base.mapobj import MapObj
+from core.filters import Round
+from core.utils import recursive_quad_merge, collapse_gap_1, collapse_gap_2
 
 
 class Good0(MapObj):
 
     def run(self) -> None:
         self.convert_coords_to_px()
-        self.round_point_coordinates(1)
+        Round(self.get_points()).apply(precision=1)
         self.remove_needles()
         self.count_points()
         self.generate_svg_code()
@@ -33,12 +32,15 @@ class Good1(MapObj):
             find_overlapping_multipolygons(multipolygons)
 
         # Find overlapping polygons
-        mergable_polygon_pairs = \
-            find_overlapping_polygons(mergable_multipolygon_pairs)
+        mergable_polygon_pairs: list[tuple[Polygon, Polygon]] = []
+        for mp1, mp2 in mergable_multipolygon_pairs:
+            polygons = mp1.get_children() + mp2.get_children()
+            list_ = find_overlapping_polygons(polygons)
+            mergable_polygon_pairs.extend(list_)
 
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         self.remove_close_points(self.PRECISION)
-        self.round_point_coordinates(1)
+        Round(self.get_points()).apply(precision=1)
         self.remove_needles()
         self.count_points()
         self.generate_svg_code()
@@ -92,7 +94,7 @@ class Good2(MapObj):
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
         self.convert_coords_to_px()
-        self.round_point_coordinates(self.PRECISION)  # !important!
+        Round(self.get_points()).apply(precision=self.PRECISION)  # !important!
         self.remove_close_points(self.PRECISION)  # !important!
 
         # Find overlapping multipolygons
@@ -101,8 +103,11 @@ class Good2(MapObj):
             find_overlapping_multipolygons(multipolygons)
 
         # Find overlapping polygons
-        mergable_polygon_pairs = \
-            find_overlapping_polygons(mergable_multipolygon_pairs)
+        mergable_polygon_pairs: list[tuple[Polygon, Polygon]] = []
+        for mp1, mp2 in mergable_multipolygon_pairs:
+            polygons = mp1.get_children() + mp2.get_children()
+            list_ = find_overlapping_polygons(polygons)
+            mergable_polygon_pairs.extend(list_)
 
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         self.count_points()
@@ -143,7 +148,7 @@ class Good3(MapObj):
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
         self.convert_coords_to_px()
-        self.round_point_coordinates(self.PRECISION)
+        Round(self.get_points()).apply(precision=self.PRECISION)
         self.remove_close_points(self.PRECISION)
 
         # Find overlapping multipolygons
@@ -152,8 +157,11 @@ class Good3(MapObj):
             find_overlapping_multipolygons(multipolygons)
 
         # Find overlapping polygons
-        mergable_polygon_pairs = \
-            find_overlapping_polygons(mergable_multipolygon_pairs)
+        mergable_polygon_pairs: list[tuple[Polygon, Polygon]] = []
+        for mp1, mp2 in mergable_multipolygon_pairs:
+            polygons = mp1.get_children() + mp2.get_children()
+            list_ = find_overlapping_polygons(polygons)
+            mergable_polygon_pairs.extend(list_)
 
         for points1, points2 in self.get_border_point_clouds(
                 mergable_polygon_pairs, self.PRECISION):
@@ -201,7 +209,7 @@ class Good4(MapObj):
         remove duplicated points before the border collapse!
         """
         self.convert_coords_to_px()
-        self.round_point_coordinates(self.PRECISION)
+        Round(self.get_points()).apply(precision=self.PRECISION)
         self.filter_points_with_same_coords()
         self.generate_svg_code()
 
@@ -212,7 +220,7 @@ class Dev(MapObj):
 
     def run(self) -> None:
         self.convert_coords_to_px()
-        self.round_point_coordinates(1)
+        Round(self.get_points()).apply(precision=self.PRECISION)
         recursive_quad_merge(self.get_points(), self.PRECISION * 2)
         self.remove_close_points(self.PRECISION)
         self.count_points()

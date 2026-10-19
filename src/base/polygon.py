@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from typing import override
 
-from geojson2svg.model.bbox import BBox
-from geojson2svg.model.obj import Obj
-from geojson2svg.model.point import POINTS, Point, create_point
+from base.bbox import BBox
+from base.obj import Obj
+from base.point import POINTS, Point, create_point
 from settings import report as r
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
@@ -72,6 +72,18 @@ def create_polygon(coordinates: list[tuple[float, float]] = []) -> Polygon:
     pg = Polygon(coordinates)
     POLYGONS[pg.id_] = pg
     return pg
+
+
+def find_overlapping_polygons(polygons: list[Polygon]) \
+        -> list[tuple[Polygon, Polygon]]:
+    overlapping_pairs: list[tuple[Polygon, Polygon]] = []
+    for i in range(len(polygons) - 1):
+        p1 = polygons[i]
+        for j in range(i + 1, len(polygons)):
+            p2 = polygons[j]
+            if p1.is_overlapping_with(p2):
+                overlapping_pairs.append((p1, p2))
+    return overlapping_pairs
 
 
 def is_polygon(coordinates: list[tuple[float, float]]) -> bool:

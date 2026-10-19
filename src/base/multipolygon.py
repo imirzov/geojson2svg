@@ -7,9 +7,9 @@
 from __future__ import annotations
 from typing import override
 
-from geojson2svg.model.obj import Obj
-from geojson2svg.model.polygon import POLYGONS, Polygon, create_polygon
-from geojson2svg.model.point import Point
+from base.obj import Obj
+from base.polygon import POLYGONS, Polygon, create_polygon
+from base.point import Point
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon

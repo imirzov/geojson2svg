@@ -5,12 +5,12 @@
 
 import sys
 
-from geojson2svg.point import POINTS, Point
-from geojson2svg.pg import Polygon
-from geojson2svg.mpg import find_overlapping_multipolygons
-from geojson2svg.common import find_overlapping_polygons
-from geojson2svg.geojson2svg import Good4 as MapObj
-from geojson2svg.lands import Land
+from base.lands import Land
+from base.point import POINTS, Point
+from base.polygon import Polygon, find_overlapping_polygons
+from base.multipolygon import find_overlapping_multipolygons
+from core import Good4 as MapObj
+from core.filters import Round
 from settings import report as r
 
 
@@ -203,7 +203,7 @@ def test() -> None:
     Coordinates are measured from top left display corner.
     """
     m = MapObj(Test1)
-    m.round_point_coordinates(m.PRECISION)
+    Round(m.get_points()).apply(precision=m.PRECISION)
     m.remove_close_points(m.PRECISION)
 
     # Find overlapping multipolygons
@@ -212,8 +212,11 @@ def test() -> None:
         find_overlapping_multipolygons(multipolygons)
 
     # Find overlapping polygons
-    mergable_polygon_pairs = \
-        find_overlapping_polygons(mergable_multipolygon_pairs)
+    mergable_polygon_pairs: list[tuple[Polygon, Polygon]] = []
+    for mp1, mp2 in mergable_multipolygon_pairs:
+        polygons = mp1.get_children() + mp2.get_children()
+        list_ = find_overlapping_polygons(polygons)
+        mergable_polygon_pairs.extend(list_)
 
     for points1, points2 in \
             get_border_points(mergable_polygon_pairs, m.PRECISION):

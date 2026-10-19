@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-from geojson2svg.model.bbox import BBox
-from geojson2svg.model.point import Point, merge_points_to
+from base.bbox import BBox
+from base.point import Point, merge_points_to
 from settings import report as r
 
 
@@ -137,3 +137,47 @@ def collapse_gap_2(points1: list[Point], points2: list[Point],
     if len(points1) != len(points2):
         msg = f'len(points1) = {len(points1)}, len(points2) = {len(points2)}'
         r.warning(msg)
+
+
+"""
+def remove_duplicate_points(pg) -> list:
+    result = []
+    for x, y in pg:
+        x = round(x, 3)
+        y = round(y, 3)
+        if not result or result and result[-1] != (x, y):
+            result.append((x, y))
+    return result
+
+
+def compress_coodrinates(feature) -> dict:
+    # Reduce coordinates precision. Duplicated points removed.
+    c = feature['geometry']['coordinates']
+    if feature['geometry']['type'] == 'MultiPolygon':
+        for j, mp in enumerate(c):
+            for i, pg in enumerate(mp):
+                assert is_polygon(pg)
+                pg = remove_duplicate_points(pg)
+                feature['geometry']['coordinates'][j][i] = pg
+    else:
+        for i in range(len(c)):
+            pg = c[i]
+            assert is_polygon(pg)
+            pg = remove_duplicate_points(pg)
+            feature['geometry']['coordinates'][i] = pg
+    return feature
+
+
+def compress(klass) -> None:
+    if os.path.exists(klass.input_name):
+        with open(klass.input_name, 'r',
+                  encoding=settings.encoding) as f:
+            geojson = json.load(f)
+        for i, feature in enumerate(geojson['features']):
+            feature = remove_unneeded_properties(feature, klass)
+            feature = compress_coodrinates(feature)
+            geojson['features'][i] = feature
+        with open(klass.output_name, 'w',
+                  encoding=settings.encoding) as f:
+            json.dump(geojson, f)
+"""

@@ -6,9 +6,9 @@
 import json
 from typing import Any, Union
 
+from base.lands import Region, District, City, CityPart
 import settings
 from settings import report as r
-from geojson2svg.lands import Region, District, City, CityPart
 
 GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
 

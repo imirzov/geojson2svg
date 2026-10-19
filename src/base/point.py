@@ -6,9 +6,10 @@
 from __future__ import annotations
 
 import sys
-from geojson2svg.model.bbox import BBox
-from geojson2svg.model.obj import Obj
 from typing import Self, Any, override
+
+from base.bbox import BBox
+from base.obj import Obj
 
 
 POINTS: dict[str | int, Point] = dict()  # id_: (x, y)

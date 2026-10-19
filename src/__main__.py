@@ -13,11 +13,11 @@ good4 - 47s, broken cities and city parts
 import pandas as pd
 import geopandas as gpd
 
+from base.lands \
+    import Regions, Districts, PrahaObvody, DistrictsWithPrague
+from core import Good1 as MapObj
 from log import initialize_logging
 import settings
-from geojson2svg import Good1 as MapObj
-from geojson2svg.lands \
-    import Regions, Districts, PrahaObvody, DistrictsWithPrague
 
 
 def dictricts_with_prague() -> None:

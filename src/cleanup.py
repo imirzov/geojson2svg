@@ -114,6 +114,37 @@ def recursively_remove_keys(data: dict[str, Any] | list[Any],
                 for item in data]
 
 
+"""
+def remove_unneeded_properties(feature, klass) -> dict:
+    # Remove unneeded properties from geojson feature
+    p = feature['properties']
+    unusefulkeys = list(p.keys())
+    unusefulkeys.remove(klass.id)
+    unusefulkeys.remove(klass.name)
+    if klass.parent:
+        unusefulkeys.remove(klass.parent)
+    if unusefulkeys:
+        for k in unusefulkeys:
+            del p[k]
+        feature['properties'] = p
+    return feature
+
+
+def cleanup_shapely_polygon(p: shapely.geometry.Polygon) \
+        -> shapely.geometry.base.BaseGeometry:
+    if p.is_valid:
+        return p
+    mp = p.buffer(0)
+    if mp.geom_type == 'Polygon' and mp.is_valid:
+        return p
+    assert mp.geom_type == 'MultiPolygon'
+    maap: dict[float, shapely.geometry.Polygon] = dict()
+    for p in mp.geoms:
+        maap[p.area] = p
+    return maap[max(maap.keys())].normalize()
+"""
+
+
 def main() -> None:
     for fname, list_ in REMOVE.items():
         fpath = settings.files / fname

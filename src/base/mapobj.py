@@ -8,15 +8,15 @@ import os
 from typing import Self, override
 import unidecode
 
-from geojson2svg.common import PARENTS
-from geojson2svg.filters import Round
-from geojson2svg.lands import Land
-from geojson2svg.model.obj import Obj
-from geojson2svg.model.point import POINTS, Point
-from geojson2svg.model.multipolygon \
+from base.lands import Land
+from base.obj import Obj
+from base.point import POINTS, Point
+from base.multipolygon \
     import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
 from settings import report as r
+
+PARENTS: dict[int, str] = dict()  # id_: name
 
 
 class MapObj(Obj):
@@ -94,10 +94,6 @@ class MapObj(Obj):
         for mp in self.get_children():
             for pg in mp.get_children():
                 pg.convert_coords_to_px(self.bbox, self.klass.w, self.klass.h)
-
-    def round_point_coordinates(self, precision: int) -> None:
-        """Round all point coordinates to precision."""
-        Round(self.get_points()).apply(precision)
 
     def remove_needles(self) -> None:
         for mp in self.get_children():

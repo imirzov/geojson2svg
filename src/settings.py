@@ -12,8 +12,8 @@ import re
 import unidecode
 
 SRC_DIR = Path(__file__).parent.resolve()
-files = Path(SRC_DIR / 'files').resolve()
-logs = Path(SRC_DIR / 'logs').resolve()
+files = Path(SRC_DIR / '..' / 'files').resolve()
+logs = Path(SRC_DIR / '..' / 'logs').resolve()
 
 for d in [logs, files]:
     if not d.exists():

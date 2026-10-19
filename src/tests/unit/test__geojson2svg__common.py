@@ -4,7 +4,7 @@
 
 import unittest
 
-from geojson2svg.point import Point
+from base.point import Point
 
 
 class TestPoint(unittest.TestCase):
@@ -14,9 +14,9 @@ class TestPoint(unittest.TestCase):
         pass
 
     def test__geojson2svg__common__point____hash__(self) -> None:
-        a = Point(1, 2)
-        b = Point(1, 2)
-        c = Point(1, 3)
+        a = Point((1, 2))
+        b = Point((1, 2))
+        c = Point((1, 3))
         assert a == b and hash(a) == hash(b)
         assert len({a, b, c}) == 2
 
