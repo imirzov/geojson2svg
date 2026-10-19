@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Represents a single geographic position (longitude, latitude)."""
+
 from __future__ import annotations
 
 import sys
-from geojson2svg.bbox import BBox
-from geojson2svg.obj import Obj
+from geojson2svg.model.bbox import BBox
+from geojson2svg.model.obj import Obj
 from typing import Self, Any, override
 
 
@@ -14,14 +16,14 @@ POINTS: dict[str | int, Point] = dict()  # id_: (x, y)
 
 class Point(Obj):
 
-    def __init__(self, x: float, y: float,
+    def __init__(self, coordinates: tuple[float, float],
                  parent: Any | None = None) -> None:
         super().__init__()
         self.id_ = len(POINTS)
-        self.x = x
-        self.y = y
+        self.x = coordinates[0]
+        self.y = coordinates[1]
         self.parent = parent
-        self.bbox = BBox(x, x, y, y)
+        self.bbox = BBox(self.x, self.x, self.y, self.y)
         self.merged = False
         self.tied_to = sys.maxsize
         self.utmost = False
@@ -59,8 +61,9 @@ class Point(Obj):
         return hash((self.x, self.y))
 
 
-def create_point(x: float, y: float, parent: Any | None = None) -> Point:
-    pt = Point(x, y, parent)
+def create_point(coordinates: tuple[float, float],
+                 parent: Any | None = None) -> Point:
+    pt = Point(coordinates, parent)
     POINTS[pt.id_] = pt
     return pt
 

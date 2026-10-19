@@ -8,12 +8,13 @@ import os
 from typing import Self, override
 import unidecode
 
-from geojson2svg.filters import Round
 from geojson2svg.common import PARENTS
-from geojson2svg.obj import Obj
+from geojson2svg.filters import Round
 from geojson2svg.lands import Land
-from geojson2svg.point import POINTS, Point
-from geojson2svg.mpg import MULTIPOLYGONS, MultiPolygon, create_multipolygon
+from geojson2svg.model.obj import Obj
+from geojson2svg.model.point import POINTS, Point
+from geojson2svg.model.multipolygon \
+    import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
 from settings import report as r
 

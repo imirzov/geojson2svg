@@ -5,7 +5,7 @@
 
 from abc import ABC
 
-from geojson2svg.point import Point
+from geojson2svg.model.point import Point
 
 
 class Filter(ABC):

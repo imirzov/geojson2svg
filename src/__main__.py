@@ -15,7 +15,7 @@ import geopandas as gpd
 
 from log import initialize_logging
 import settings
-from geojson2svg.geojson2svg import Good1 as MapObj
+from geojson2svg import Good1 as MapObj
 from geojson2svg.lands \
     import Regions, Districts, PrahaObvody, DistrictsWithPrague
 

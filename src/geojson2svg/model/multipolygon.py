@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Represents a collection of multiple separate polygons
+(e.g., an archipelago of islands)."""
+
 from __future__ import annotations
 from typing import override
 
-from geojson2svg.obj import Obj
-from geojson2svg.pg import POLYGONS, Polygon, create_polygon
-from geojson2svg.point import Point
+from geojson2svg.model.obj import Obj
+from geojson2svg.model.polygon import POLYGONS, Polygon, create_polygon
+from geojson2svg.model.point import Point
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon

@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Represents a bounded area. The coordinates consist of an outer boundary
+ring (and optional inner rings/holes), where the first and last coordinates
+must be identical to close the shape.
+"""
+
 from __future__ import annotations
 
 from typing import override
 
-from geojson2svg.bbox import BBox
-from geojson2svg.obj import Obj
-from geojson2svg.point import POINTS, Point, create_point
+from geojson2svg.model.bbox import BBox
+from geojson2svg.model.obj import Obj
+from geojson2svg.model.point import POINTS, Point, create_point
 from settings import report as r
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
@@ -26,7 +31,7 @@ class Polygon(Obj):
     def set_children(self, coordinates: list[tuple[float, float]]) -> None:
         assert is_polygon(coordinates)
         for x, y in coordinates:
-            new_pt = create_point(x, y, self)
+            new_pt = create_point((x, y), self)
             self.children.append(new_pt.id_)
 
     @override

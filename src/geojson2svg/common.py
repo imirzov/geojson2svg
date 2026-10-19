@@ -42,8 +42,8 @@ TODO Read svg_code from a file.
 
 from __future__ import annotations
 
-from geojson2svg.pg import Polygon
-from geojson2svg.mpg import MultiPolygon
+from geojson2svg.model.polygon import Polygon
+from geojson2svg.model.multipolygon import MultiPolygon
 
 PARENTS: dict[int, str] = dict()  # id_: name
 
