@@ -32,6 +32,26 @@ class TestPoint__Point(unittest.TestCase):
     def setUpClass(cls) -> None:
         pass
 
+    @unittest.skip("TODO: implement test")
+    def test__base__point__Point____str__(self) -> None:
+        ...
+
+    @unittest.skip("TODO: implement test")
+    def test__base__point__Point__close_to(self) -> None:
+        ...
+
+    @unittest.skip("TODO: implement test")
+    def test__base__point__Point__get_children(self) -> None:
+        ...
+
+    @unittest.skip("TODO: implement test")
+    def test__base__point__Point__get_points(self) -> None:
+        ...
+
+    @unittest.skip("TODO: implement test")
+    def test__base__point__Point__round(self) -> None:
+        ...
+
     def test__base__point__Point____hash__(self) -> None:
         a = Point((1, 2))
         b = Point((1, 2))

@@ -14,13 +14,6 @@ from core.filters import Round
 from settings import report as r
 
 
-class Test1(Land):
-    input_name = 'test1.geojson'
-    output_name = 'test1.svg'
-    w = 1000
-    h = 1000
-
-
 class Qwe1(Land):
     input_name = 'qwe1.geojson'
     output_name = input_name
@@ -202,7 +195,7 @@ def test() -> None:
     """Create SVG image from custom points.
     Coordinates are measured from top left display corner.
     """
-    m = MapObj(Test1)
+    m = MapObj(Qwe1)
     Round(m.get_points()).apply(precision=m.PRECISION)
     m.remove_close_points(m.PRECISION)
 
