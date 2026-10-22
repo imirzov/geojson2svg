@@ -83,8 +83,8 @@ class MapObj(Obj):
     @override
     def get_points(self) -> list[Point]:
         points: list[Point] = []
-        for mpg in self.get_children():
-            points.extend(mpg.get_points())
+        for mp in self.get_children():
+            points.extend(mp.get_points())
         return points
 
     def convert_coords_to_px(self) -> None:

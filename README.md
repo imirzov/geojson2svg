@@ -2,7 +2,7 @@
 
 Convert GeoJSON file to SVG and save.
 CR map have proportions 2000x1155.
-All parameters are set in Land child classes.
+All parameters are set in Land classes.
 
 Conventions:
     mp - multipolygon
