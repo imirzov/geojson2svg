@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 
 
+import time
 import unittest
 
 from base.point import Point
+import log
 
 
 class TestPoint(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        cls.start = time.perf_counter()
+        log.initialize_logging()
 
     @unittest.skip("TODO: implement test")
     def test__base__point__create_point(self) -> None:
@@ -23,14 +26,15 @@ class TestPoint(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        log.log_time_delta(cls.start)
 
 
 class TestPoint__Point(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        cls.start = time.perf_counter()
+        log.initialize_logging()
 
     @unittest.skip("TODO: implement test")
     def test__base__point__Point____str__(self) -> None:
@@ -61,4 +65,4 @@ class TestPoint__Point(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        log.log_time_delta(cls.start)

@@ -1,11 +1,15 @@
+import time
 import unittest
+
+import log
 
 
 class TestMapObj(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        cls.start = time.perf_counter()
+        log.initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__base__mapobj__filter_points_with_same_coords(self) -> None:
@@ -58,4 +62,4 @@ class TestMapObj(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        log.log_time_delta(cls.start)

@@ -1,11 +1,15 @@
+import time
 import unittest
+
+import log
 
 
 class TestSettings(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        cls.start = time.perf_counter()
+        log.initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__settings__time_now(self) -> None:
@@ -17,4 +21,4 @@ class TestSettings(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        log.log_time_delta(cls.start)

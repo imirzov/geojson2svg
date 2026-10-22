@@ -1,11 +1,15 @@
+import time
 import unittest
+
+import log
 
 
 class TestBBox(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        cls.start = time.perf_counter()
+        log.initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__base__bbox__BBox____add__(self) -> None:
@@ -17,4 +21,4 @@ class TestBBox(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        log.log_time_delta(cls.start)
