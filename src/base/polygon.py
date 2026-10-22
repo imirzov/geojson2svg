@@ -8,12 +8,14 @@ must be identical to close the shape.
 
 from __future__ import annotations
 
-from typing import override
+from typing import Any, override
 
+from base import get_wrapping_depth
 from base.bbox import BBox
 from base.obj import Obj
 from base.point import POINTS, Point, create_point
 from settings import report as r
+
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
 
@@ -86,13 +88,19 @@ def find_overlapping_polygons(polygons: list[Polygon]) \
     return overlapping_pairs
 
 
-def is_polygon(coordinates: list[tuple[float, float]]) -> bool:
-    if type(coordinates) is not list:
-        return False
-    for coords in coordinates:
-        if len(coords) != 2:
-            return False
-        for c in coords:
-            if type(c) not in [int, float]:
-                return False
-    return True
+def is_polygon(coordinates: list[Any]) -> bool:
+    # if type(coordinates) is not list:
+    #     r.warning('Coordinates must be a list.')
+    #     return False
+    # for coords in coordinates:
+    #     if len(coords) != 2:
+    #         len_ = len(coords)
+    #         r.warning('Each coordinate must have '
+    #                   f'exactly 2 elements, not {len_}.')
+    #         return False
+    #     for c in coords:
+    #         if type(c) not in [int, float]:
+    #             r.warning('Each coordinate must be an int or float.')
+    #             return False
+    # return True
+    return get_wrapping_depth(coordinates) == 2

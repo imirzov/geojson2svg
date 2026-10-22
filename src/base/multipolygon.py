@@ -5,8 +5,9 @@
 (e.g., an archipelago of islands)."""
 
 from __future__ import annotations
-from typing import override
+from typing import Any, override
 
+from base import get_wrapping_depth
 from base.obj import Obj
 from base.polygon import POLYGONS, Polygon, create_polygon
 from base.point import Point
@@ -27,6 +28,7 @@ class MultiPolygon(Obj):
 
     def set_children(self, coordinates:
                      list[list[list[tuple[float, float]]]]) -> None:
+        assert is_multipolygon(coordinates)
         for mp in coordinates:
             for coords in mp:
                 # # Filter triangles/cross-intersections
@@ -68,3 +70,7 @@ def find_overlapping_multipolygons(
             if mp1.is_overlapping_with(mp2):
                 overlapping_pairs.append((mp1, mp2))
     return overlapping_pairs
+
+
+def is_multipolygon(coordinates: list[Any]) -> bool:
+    return get_wrapping_depth(coordinates) == 3
