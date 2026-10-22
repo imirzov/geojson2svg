@@ -8,10 +8,6 @@ class TestMapObj(unittest.TestCase):
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__mapobj__create_multipolygon(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
     def test__base__mapobj__filter_points_with_same_coords(self) -> None:
         pass
 

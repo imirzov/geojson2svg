@@ -12,11 +12,11 @@ class TestMultiPolygon(unittest.TestCase):
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__create_polygon(self) -> None:
+    def test__base__multipolygon__find_overlapping_multipolygons(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__find_overlapping_multipolygons(self) -> None:
+    def test__base__multipolygon__is_multipolygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')

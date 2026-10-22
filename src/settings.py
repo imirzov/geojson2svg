@@ -14,6 +14,8 @@ import unidecode
 src = Path(__file__).parent.resolve()
 files = Path(src.parent / 'files').resolve()
 logs = Path(src.parent / 'logs').resolve()
+tests = Path(src / 'tests').resolve()
+
 
 for d in [logs, files]:
     if not d.exists():

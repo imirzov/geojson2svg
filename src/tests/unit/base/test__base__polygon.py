@@ -8,10 +8,6 @@ class TestPolygon(unittest.TestCase):
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__create_point(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
     def test__base__polygon__create_polygon(self) -> None:
         pass
 

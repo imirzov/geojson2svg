@@ -28,10 +28,6 @@ class TestUtils(unittest.TestCase):
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__core__utils__merge_points_to(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
     def test__core__utils__recursive_quad_merge(self) -> None:
         pass
 

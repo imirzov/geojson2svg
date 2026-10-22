@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""A tool to find missing unittests."""
+"""A tool to find missing and redundant unittests."""
 
-import os
-import unittest
-import time
+import enum
 import importlib
-import core.utils
 import inspect
-import re
+import os
+from pathlib import Path
+import time
 import types
 from typing import Any, Callable
-import enum
-from pathlib import Path
+import unittest
 
-import core
+import core.utils
 import log
 import settings
 from settings import report as r
@@ -27,16 +25,20 @@ SKIP = ['abstractmethod', 'override', 'cast', 'Counter',
         '__init__', '__eq__', '__repr__', '_plot_lines']
 
 
-def get_modules(directory: str, recursive: bool = True) \
+def get_modules(directory: Path, skip: list[Path] = []) \
         -> list[types.ModuleType]:
     modules: list[types.ModuleType] = []
-    plist: list[str | Path] = [settings.src, directory, '**', '*.py']
-    for f in core.utils.glob_files(plist, recursive=recursive):
+    plist: list[str | Path] = [directory, '**', '*.py']
+    for f in core.utils.glob_files(plist, recursive=True):
+        if any(d in f.parents for d in skip):
+            continue
+        # import_module('__main__') returns the running test runner
+        if f.name == '__main__.py':
+            continue
         f = f.relative_to(settings.src)
         mpath = str(f).replace(os.sep, '.')[:-3]
-        if '__init__' not in mpath:
-            m = importlib.import_module(mpath)
-            modules.append(m)
+        m = importlib.import_module(mpath)
+        modules.append(m)
     return sorted(modules, key=lambda x: x.__name__)
 
 
@@ -46,12 +48,7 @@ def get_module(mname: str) -> types.ModuleType:
 
 
 def get_src_modules() -> list[types.ModuleType]:
-    modules: list[types.ModuleType] = []
-    modules.extend(get_modules('base'))
-    modules.extend(get_modules('core'))
-    modules.append(get_module('settings.py'))
-    # TODO Add other source files as needed
-    return sorted(modules, key=lambda x: x.__name__)
+    return get_modules(directory=settings.src, skip=[settings.tests])
 
 
 def get_classes(my_module: types.ModuleType) -> dict[str, type[Any]]:
@@ -65,10 +62,17 @@ def get_classes(my_module: types.ModuleType) -> dict[str, type[Any]]:
 
 def get_function_names(my_module: types.ModuleType) -> list[str]:
     functions: list[str] = []
-    for name, _ in inspect.getmembers(my_module, inspect.isfunction):
-        if name not in SKIP:
+    for name, func in inspect.getmembers(my_module, inspect.isfunction):
+        if name in SKIP:
+            continue
+        if func.__module__ == my_module.__name__:
             functions.append(name)
     return functions
+
+
+def is_any_method(obj: Any) -> bool:
+    """Check for both regular functions and bound class methods."""
+    return inspect.isfunction(obj) or inspect.ismethod(obj)
 
 
 def get_methods(my_class: type) -> list[Callable[..., Any]]:
@@ -76,19 +80,25 @@ def get_methods(my_class: type) -> list[Callable[..., Any]]:
     if hasattr(my_class, '__abstractmethods__'):
         abstract_methods = set(getattr(my_class, '__abstractmethods__'))
     methods: list[Callable[..., Any]] = []
-    for name, func in inspect.getmembers(my_class, inspect.isfunction):
-        if name not in abstract_methods \
-            and name not in SKIP \
-                and func.__qualname__.startswith(my_class.__name__):
-            # and not name.startswith('_') \
+    for name, func in inspect.getmembers(my_class, is_any_method):
+        if name in abstract_methods:
+            continue
+        if name in SKIP:
+            continue
+        is_owned = False
+        if inspect.ismethod(func):
+            is_owned = func.__self__ is my_class
+        else:
+            is_owned = func.__qualname__.startswith(my_class.__name__)
+        if is_owned:
             methods.append(func)
-            # r.info(func.__qualname__)
     return methods
 
 
 def get_existing_unittests() -> list[str]:
     test_names: list[str] = []
-    for m in get_modules('tests/unit'):
+    dpath = settings.tests / 'unit'
+    for m in get_modules(directory=dpath):
         for _, c in inspect.getmembers(m, inspect.isclass):
             for method_name, _ in inspect.getmembers(c, inspect.isfunction):
                 if method_name.startswith('test_'):
@@ -99,15 +109,15 @@ def get_existing_unittests() -> list[str]:
 def get_needed_tests() -> list[str]:
     test_names: list[str] = []
     for m in get_src_modules():
-        mpath = re.sub(r'_\d\d_', '', m.__name__)
-        mpath = mpath.replace('.', SEP)
+        mpath = m.__name__.replace('.', SEP)
         for fname in get_function_names(m):
             tname = f'test{SEP}{mpath}{SEP}{fname}'
             test_names.append(tname)
         for class_name, c in get_classes(m).items():
             for method in get_methods(c):
                 method_name = method.__name__
-                tname = f'test{SEP}{mpath}{SEP}{class_name}{SEP}{method_name}'
+                tname = f'test{SEP}{mpath}{SEP}{class_name}' \
+                        f'{SEP}{method_name}'
                 test_names.append(tname)
     return test_names
 
