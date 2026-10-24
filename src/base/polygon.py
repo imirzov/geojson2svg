@@ -31,7 +31,7 @@ class Polygon(Obj):
         self.converted = False
 
     def set_children(self, coordinates: list[tuple[float, float]]) -> None:
-        assert is_polygon(coordinates)
+        assert is_polygon(coordinates), str(coordinates)[:100]
         for x, y in coordinates:
             new_pt = create_point((x, y), self)
             self.children.append(new_pt.id_)
@@ -103,4 +103,6 @@ def is_polygon(coordinates: list[Any]) -> bool:
     #             r.warning('Each coordinate must be an int or float.')
     #             return False
     # return True
-    return get_wrapping_depth(coordinates) == 2
+    wd = get_wrapping_depth(coordinates)
+    r.debug(f'Wrapping depth: {wd}')
+    return wd == 2

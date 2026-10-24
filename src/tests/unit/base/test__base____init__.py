@@ -17,27 +17,11 @@ class TestBase(unittest.TestCase):
 
     def test__base____init____get_wrapping_depth(self) -> None:
         with self.subTest('polygon'):
-            pg_coordinates = [
-                [
-                    [
-                        14.810392701669292,
-                        50.85844717947565
-                    ]
-                ]
-            ]
+            pg_coordinates = [[[14.810, 50.858]]]
             wd1 = get_wrapping_depth(pg_coordinates)
             self.assertEqual(wd1, 2)
         with self.subTest('multi-polygon'):
-            mpg_coordinates = [
-                [
-                    [
-                        [
-                            14.304,
-                            51.055
-                        ]
-                    ]
-                ]
-            ]
+            mpg_coordinates = [pg_coordinates]
             wd2 = get_wrapping_depth(mpg_coordinates)
             self.assertEqual(wd2, 3)
 

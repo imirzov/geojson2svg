@@ -22,7 +22,7 @@ for d in [logs, files]:
         d.mkdir(parents=True, exist_ok=True)
 
 report = logging.getLogger('report')
-log_level = logging.INFO
+log_level = logging.DEBUG
 encoding = 'utf-8'
 geo = 'geo.json'
 

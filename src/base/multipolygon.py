@@ -11,6 +11,7 @@ from base import get_wrapping_depth
 from base.obj import Obj
 from base.polygon import POLYGONS, Polygon, create_polygon
 from base.point import Point
+from settings import report as r
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
@@ -28,7 +29,7 @@ class MultiPolygon(Obj):
 
     def set_children(self, coordinates:
                      list[list[list[tuple[float, float]]]]) -> None:
-        assert is_multipolygon(coordinates)
+        assert is_multipolygon(coordinates), str(coordinates)[:100]
         for mp in coordinates:
             for coords in mp:
                 # # Filter triangles/cross-intersections
@@ -73,4 +74,6 @@ def find_overlapping_multipolygons(
 
 
 def is_multipolygon(coordinates: list[Any]) -> bool:
-    return get_wrapping_depth(coordinates) == 3
+    wd = get_wrapping_depth(coordinates)
+    r.debug(f'Wrapping depth: {wd}')
+    return wd == 3
