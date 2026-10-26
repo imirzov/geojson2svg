@@ -13,12 +13,12 @@ from base.obj import Obj
 
 
 POINTS: dict[str | int, Point] = dict()  # id_: (x, y)
+pt = tuple[float, float]
 
 
 class Point(Obj):
 
-    def __init__(self, coordinates: tuple[float, float],
-                 parent: Any | None = None) -> None:
+    def __init__(self, coordinates: pt, parent: Any | None = None) -> None:
         super().__init__()
         self.id_ = len(POINTS)
         self.x = coordinates[0]
@@ -62,14 +62,13 @@ class Point(Obj):
         return hash((self.x, self.y))
 
 
-def create_point(coordinates: tuple[float, float],
-                 parent: Any | None = None) -> Point:
+def create_point(coordinates: pt, parent: Any | None = None) -> Point:
     pt = Point(coordinates, parent)
     POINTS[pt.id_] = pt
     return pt
 
 
-def merge_points_to(points: list[Point], point: Point) -> None:
-    for pt in points:
-        pt.x = point.x
-        pt.y = point.y
+def merge_points_to(points: list[Point], p: Point) -> None:
+    for point in points:
+        point.x = p.x
+        point.y = p.y

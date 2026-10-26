@@ -91,15 +91,16 @@ class MapObj(Obj):
         """Convert latitude and longitude GeoJson coords
         to Land's width (w) and height (h) in pixels.
         """
-        for mp in self.get_children():
-            for pg in mp.get_children():
-                pg.convert_coords_to_px(self.bbox, self.klass.w, self.klass.h)
+        for multipolygon in self.get_children():
+            for polygon in multipolygon.get_children():
+                polygon.convert_coords_to_px(
+                    self.bbox, self.klass.w, self.klass.h)
 
     def remove_needles(self) -> None:
-        for mp in self.get_children():
-            for pg in mp.get_children():
+        for multipolygon in self.get_children():
+            for polygon in multipolygon.get_children():
                 point_ids_to_remove: set[int] = set()
-                points = pg.get_children()
+                points = polygon.get_children()
                 for i in range(len(points) - 3):
                     pt0 = points[i]
                     pt1 = points[i + 1]
@@ -107,33 +108,33 @@ class MapObj(Obj):
                     if pt0.x == pt2.x and pt0.y == pt2.y:
                         point_ids_to_remove.add(pt1.id_)
                 for id_ in point_ids_to_remove:
-                    pg.remove_point(id_)
+                    polygon.remove_point(id_)
 
     def remove_close_points(self, precision: int) -> None:
         """Remove close points (within precision)."""
-        for mp in self.get_children():
-            for pg in mp.get_children():
+        for multipolygon in self.get_children():
+            for polygon in multipolygon.get_children():
                 prev_pt = None
-                for pt in pg.get_children():
+                for pt in polygon.get_children():
                     if prev_pt is not None:
                         if pt.close_to(prev_pt, precision):
-                            pg.remove_point(pt.id_)
+                            polygon.remove_point(pt.id_)
                             continue
                     prev_pt = pt
 
     def filter_points_with_same_coords(self) -> None:
-        for mp in self.get_children():
-            for pg in mp.get_children():
-                points = pg.get_children()
+        for multipolygon in self.get_children():
+            for polygon in multipolygon.get_children():
+                points = polygon.get_children()
                 points = filter_points_with_same_coords(points)
-                coords = [(pt.x, pt.y) for pt in points]
-                pg.set_children(coords)
+                coords = [[(pt.x, pt.y) for pt in points]]
+                polygon.set_children(coords)
 
     def count_points(self) -> None:
         counter = 0
-        for mp in self.get_children():
-            for pg in mp.get_children():
-                counter += len(pg.get_children())
+        for multipolygon in self.get_children():
+            for polygon in multipolygon.get_children():
+                counter += len(polygon.get_children())
         r.info('{} points after.\n'.format(counter))
 
     def __add__(self, map_obj: Self) -> Self:
@@ -149,19 +150,21 @@ class MapObj(Obj):
         """Create paths and place them into SVG code."""
         pad = ' ' * 4
         svg_paths: list[str] = []
-        for mp in self.get_children():
+        for multipolygon in self.get_children():
             coords = ''
-            for pg in mp.get_children():
+            for polygon in multipolygon.get_children():
                 coords += 'M'  # NOTE use small letter for dx,dy
-                for pt in pg.get_children():
+                for pt in polygon.get_children():
                     # coords += ' {:.3f},{:.3f}'.format(dx, dy) # for dx,dy
                     coords += f' {pt.x} {pt.y}'
                     if show_ids:
-                        svg_paths.append('<text x="{}" y="{}">{}</text>\n'
-                                         .format(pt.x + 10 * pg.id_,
-                                                 pt.y - 10 * pg.id_, pt.id_))
+                        svg_paths.append(
+                            '<text x="{}" y="{}">{}</text>\n'
+                            .format(pt.x + 10 * polygon.id_,
+                                    pt.y - 10 * polygon.id_, pt.id_))
                 coords += ' Z'  # NOTE use small letter for dx,dy
-            svg_paths.append(f'{pad}<path d="{coords}" id="{mp.path_id}" />\n')
+            svg_paths.append('{}<path d="{}" id="{}" />\n'
+                             .format(pad, coords, multipolygon.path_id))
         # for pt in BORDER_UTMOST_POINTS:
         #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
         #                      'r="0.5" style="fill:black;" />\n')
@@ -208,11 +211,11 @@ def filter_points_with_same_coords(points: list[Point]) -> list[Point]:
         for pt2 in filtered_points:
             if pt1.x == pt2.x and pt1.y == pt2.y:
                 unique = False
-                pg = pt1.parent
-                if pg is None:
+                polygon = pt1.parent
+                if polygon is None:
                     r.warning(f'Point {pt1.id_} has no parent polygon.')
                 else:
-                    pg.remove_point(pt1.id_)
+                    polygon.remove_point(pt1.id_)
         if unique:
             filtered_points.append(pt1)
     r.debug('Before filtering: {}, after: {}'

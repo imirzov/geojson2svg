@@ -4,14 +4,13 @@
 from typing import Any
 
 
-def get_wrapping_depth(list_: list[Any]) -> int:
-    """Returns the wrapping depth of a nested list."""
-    if len(list_) == 1:
-        return 1 + get_wrapping_depth(list_[0])
-    else:
+def get_nested_list_depth(list_: Any) -> int:
+    """Returns the wrapping depth of a nested list.
+    Takes into account only the first list element.
+    """
+    if not isinstance(list_, list):
         return 0
-
-    # assert len(list_), 'empty list'
-    # if all(isinstance(value, (int, float)) for value in list_):
-    #     return 0
-    # assert len(list_) == 1, f'list contains {len(list_)} elements'
+    else:
+        if not list_:
+            return 1
+        return 1 + get_nested_list_depth(list_[0])

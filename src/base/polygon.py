@@ -8,33 +8,35 @@ must be identical to close the shape.
 
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
-from base import get_wrapping_depth
+from base import get_nested_list_depth
 from base.bbox import BBox
 from base.obj import Obj
-from base.point import POINTS, Point, create_point
+from base.point import POINTS, Point, pt, create_point
 from settings import report as r
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
+pg = list[list[pt]]
 
 
 class Polygon(Obj):
     """Parent of Point, consists of multiple Point objects."""
 
-    def __init__(self, coordinates: list[tuple[float, float]]) -> None:
+    def __init__(self, coordinates: pg) -> None:
         super().__init__()
         self.id_ = len(POLYGONS)
         self.set_children(coordinates)
         self.set_bbox()
         self.converted = False
 
-    def set_children(self, coordinates: list[tuple[float, float]]) -> None:
+    def set_children(self, coordinates: pg) -> None:
         assert is_polygon(coordinates), str(coordinates)[:100]
-        for x, y in coordinates:
-            new_pt = create_point((x, y), self)
-            self.children.append(new_pt.id_)
+        for ring in coordinates:
+            for x, y in ring:
+                new_pt = create_point((x, y), self)
+                self.children.append(new_pt.id_)
 
     @override
     def get_children(self) -> list[Point]:
@@ -70,10 +72,10 @@ class Polygon(Obj):
         self.converted = True
 
 
-def create_polygon(coordinates: list[tuple[float, float]] = []) -> Polygon:
-    pg = Polygon(coordinates)
-    POLYGONS[pg.id_] = pg
-    return pg
+def create_polygon(coordinates: pg = []) -> Polygon:
+    polygon = Polygon(coordinates)
+    POLYGONS[polygon.id_] = polygon
+    return polygon
 
 
 def find_overlapping_polygons(polygons: list[Polygon]) \
@@ -88,21 +90,5 @@ def find_overlapping_polygons(polygons: list[Polygon]) \
     return overlapping_pairs
 
 
-def is_polygon(coordinates: list[Any]) -> bool:
-    # if type(coordinates) is not list:
-    #     r.warning('Coordinates must be a list.')
-    #     return False
-    # for coords in coordinates:
-    #     if len(coords) != 2:
-    #         len_ = len(coords)
-    #         r.warning('Each coordinate must have '
-    #                   f'exactly 2 elements, not {len_}.')
-    #         return False
-    #     for c in coords:
-    #         if type(c) not in [int, float]:
-    #             r.warning('Each coordinate must be an int or float.')
-    #             return False
-    # return True
-    wd = get_wrapping_depth(coordinates)
-    r.debug(f'Wrapping depth: {wd}')
-    return wd == 2
+def is_polygon(coordinates: pg) -> bool:
+    return get_nested_list_depth(coordinates) == 3

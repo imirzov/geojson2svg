@@ -7,37 +7,34 @@
 from __future__ import annotations
 from typing import Any, override
 
-from base import get_wrapping_depth
+from base import get_nested_list_depth
 from base.obj import Obj
-from base.polygon import POLYGONS, Polygon, create_polygon
+from base.polygon import POLYGONS, pg, Polygon, create_polygon
 from base.point import Point
-from settings import report as r
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
+mp = list[pg]
 
 
 class MultiPolygon(Obj):
     """Parent of Polygon, consists of multiple Polygon objects."""
 
-    def __init__(self, path_id: str,
-                 coordinates: list[list[list[tuple[float, float]]]]) -> None:
+    def __init__(self, path_id: str, coordinates: mp) -> None:
         super().__init__()
         self.path_id = path_id
         self.set_children(coordinates)
         self.set_bbox()
 
-    def set_children(self, coordinates:
-                     list[list[list[tuple[float, float]]]]) -> None:
+    def set_children(self, coordinates: mp) -> None:
         assert is_multipolygon(coordinates), str(coordinates)[:100]
-        for mp in coordinates:
-            for coords in mp:
-                # # Filter triangles/cross-intersections
-                # sgp = shapely.geometry.Polygon(coords)
-                # sgp = cleanup_shapely_polygon(sgp)
-                # coords = list(sgp.exterior.coords)
-                pg = create_polygon(coords)
-                self.children.append(pg.id_)
+        for coords in coordinates:
+            # Filter triangles/cross-intersections
+            # sgp = shapely.geometry.Polygon(coords)
+            # sgp = cleanup_shapely_polygon(sgp)
+            # coords = list(sgp.exterior.coords)
+            polygon = create_polygon(coords)
+            self.children.append(polygon.id_)
         assert len(self.children), 'MultiPolygon has no children!'
 
     @override
@@ -47,17 +44,15 @@ class MultiPolygon(Obj):
     @override
     def get_points(self) -> list[Point]:
         points: list[Point] = []
-        for pg in self.get_children():
-            points.extend(pg.get_points())
+        for polygon in self.get_children():
+            points.extend(polygon.get_points())
         return points
 
 
-def create_multipolygon(
-        path_id: str,
-        coordinates: list[list[list[tuple[float, float]]]]) -> MultiPolygon:
-    mp = MultiPolygon(path_id, coordinates)
-    MULTIPOLYGONS[path_id] = mp
-    return mp
+def create_multipolygon(path_id: str, coordinates: mp) -> MultiPolygon:
+    multipolygon = MultiPolygon(path_id, coordinates)
+    MULTIPOLYGONS[path_id] = multipolygon
+    return multipolygon
 
 
 def find_overlapping_multipolygons(
@@ -74,6 +69,4 @@ def find_overlapping_multipolygons(
 
 
 def is_multipolygon(coordinates: list[Any]) -> bool:
-    wd = get_wrapping_depth(coordinates)
-    r.debug(f'Wrapping depth: {wd}')
-    return wd == 3
+    return get_nested_list_depth(coordinates) == 4

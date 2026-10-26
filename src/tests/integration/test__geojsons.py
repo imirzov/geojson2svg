@@ -39,11 +39,9 @@ class Test(unittest.TestCase):
     def test__geojsons(self) -> None:
         self.assertTrue(self._paths, f'No geojson files in {files}')
         for path in self._paths:
-            # print(path)
             with self.subTest(str(path.relative_to(files))):
                 for i, geometry in get_feature_geometries(path):
                     type_ = geometry['type']
-                    # print(i, type_)
                     assert type_ in GEOMETRY_TYPES
                     assert 'coordinates' in geometry
                     try:
