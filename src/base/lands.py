@@ -1,9 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Definitions of various land-related classes and test cases."""
+
+from pathlib import Path
+
+from settings import files
+
+
+state = files / 'state'
+regions = files / 'regions'
+districts = files / 'districts'
+districts_with_prague = districts / 'districts_with_prague'
+cities = files / 'cities'
+city_parts = cities / 'city_parts'
+praha = cities / 'praha'
+tests = files / 'tests'
+
+
 class Land:
-    input_name = ''
-    output_name = ''
+    fpath = Path('')
     w = 2000
     h = 1155
     id = 'kod'
@@ -11,69 +27,162 @@ class Land:
     parent = None
 
 
-class State(Land):
-    url = 'https://hub.arcgis.com/datasets/' \
-        + '92ee7c45a4f64262bac5217da8061233_0/explore'
-    input_name = 'ArcČR_Stat.geojson'
-    output_name = '0.state.geojson'
+class State1(Land):
+    fpath = state / '1.geojson'
 
 
-class Region(Land):
-    url = 'https://hub.arcgis.com/datasets/' \
-        + '77e01a68c02c43009020014020b925bf_0/explore'
-    input_name = 'ArcČR_Kraj.geojson'
-    output_name = '1.regions.geojson'
+class State2(Land):
+    fpath = state / '2.geojson'
 
 
-class Regions(Land):
-    input_name = '1.regions.geojson'
-    output_name = '1.regions_.geojson'
+class State3(Land):
+    fpath = state / '3.geojson'
 
 
-class District(Land):
-    url = 'https://hub.arcgis.com/datasets/' \
-        + '660bf23e44704b77a77f5a769a81fcd9_0/explore'
-    input_name = 'ArcČR_Okres.geojson'
-    output_name = '2.districts.geojson'
+class Region1(Land):
+    fpath = regions / '1.geojson'
+
+
+class Region2(Land):
+    fpath = regions / '2.geojson'
+
+
+class Region2_(Land):
+    fpath = regions / '2_.geojson'
+
+
+class Region3(Land):
+    fpath = regions / '3.geojson'
+
+
+class Region4(Land):
+    fpath = regions / '4.geojson'
+
+
+class Jihocesky(Land):
+    fpath = regions / 'jihocesky.geojson'
+
+
+class Jihomoravsky(Land):
+    fpath = regions / 'jihomoravsky.geojson'
+
+
+class Karlovarsky(Land):
+    fpath = regions / 'karlovarsky.geojson'
+
+
+class Kralovehradecky(Land):
+    fpath = regions / 'kralovehradecky.geojson'
+
+
+class Liberecky(Land):
+    fpath = regions / 'liberecky.geojson'
+
+
+class Moravskoslezsky(Land):
+    fpath = regions / 'moravskoslezsky.geojson'
+
+
+class Olomoucky(Land):
+    fpath = regions / 'olomoucky.geojson'
+
+
+class Pardubicky(Land):
+    fpath = regions / 'pardubicky.geojson'
+
+
+class Plzensky(Land):
+    fpath = regions / 'plzensky.geojson'
+
+
+class Praha(Land):
+    fpath = regions / 'praha.geojson'
+
+
+class Stredocesky(Land):
+    fpath = regions / 'stredocesky.geojson'
+
+
+class Ustecky(Land):
+    fpath = regions / 'ustecky.geojson'
+
+
+class Vysocina(Land):
+    fpath = regions / 'vysocina.geojson'
+
+
+class Zlinsky(Land):
+    fpath = regions / 'zlinsky.geojson'
+
+
+class District1(Land):
+    fpath = districts / '1.geojson'
     parent = 'vusc'
 
 
-class Districts(Land):
-    input_name = '2.districts.geojson'
-    output_name = '2.districts_.geojson'
+class District2(Land):
+    fpath = districts / '2.json'
     parent = 'vusc'
 
 
-class DistrictsWithPrague(Land):
-    input_name = '2.districts_with_prague.geojson'
-    output_name = '2.districts_with_prague_.geojson'
+class District3(Land):
+    fpath = districts / '3.geojson'
+    parent = 'vusc'
 
 
-class City(Land):
-    url = 'https://hub.arcgis.com/datasets/' \
-        + '20ab475cd72d483a83b1a94fd88c57a0_0/explore'  # NOTE URL 404
-    input_name = 'ArcČR_Obec.geojson'
-    output_name = '3.cities.geojson'
+class District4(Land):
+    fpath = districts / '4.geojson'
+    parent = 'vusc'
+
+
+class DistrictPrague1(Land):
+    fpath = districts_with_prague / '1.geojson'
+
+
+class DistrictPrague2(Land):
+    fpath = districts_with_prague / '2.geojson'
+
+
+class DistrictPrague2_(Land):
+    fpath = districts_with_prague / '2_.geojson'
+
+
+class DistrictPrague3(Land):
+    fpath = districts_with_prague / '3.geojson'
+
+
+class City1(Land):
+    fpath = cities / '1.geojson'
     parent = 'okres'
 
 
-class Cities(Land):
-    input_name = '3.cities.geojson'
-    output_name = '3.cities_.geojson'
+class City2(Land):
+    fpath = cities / '2.geojson'
     parent = 'okres'
 
 
-class CityPart(Land):
-    url = 'https://hub.arcgis.com/datasets/' \
-        + 'b62364eee2f74f41af32e1930f3048c0_0/explore'
-    input_name = 'ArcČR_Městská_část.geojson'
-    output_name = '4.city_parts.geojson'
+class City3(Land):
+    fpath = cities / '3.geojson'
+    parent = 'okres'
+
+
+class City4(Land):
+    fpath = cities / '4.geojson'
+    parent = 'okres'
+
+
+class City5(Land):
+    fpath = cities / '5.geojson'
+    parent = 'okres'
+
+
+class CityParts1(Land):
+    fpath = city_parts / '1.geojson'
     parent = 'obec'
 
 
-class CityParts(Land):
-    input_name = '4.city_parts.geojson'
-    output_name = '4.city_parts_.geojson'
+class CityParts2(Land):
+    fpath = city_parts / '2.geojson'
     parent = 'obec'
 
 
@@ -83,17 +192,42 @@ class Prague(Land):
 
 
 class PrahaObvody(Prague):
-    input_name = '5.praha_obvody.geojson'
-    output_name = '5.praha_obvody_.geojson'
+    fpath = praha / '5.praha_obvody.geojson'
+
+
+class PrahaObvody_(Prague):
+    fpath = praha / '5.praha_obvody_.geojson'
 
 
 class PrahaCasti(Prague):
-    input_name = '6.praha_casti.geojson'
-    output_name = '6.praha_casti_.geojson'
+    fpath = praha / '6.praha_casti.geojson'
     name = 'NAZEV_MC'
 
 
 class PrahaUzemi(Prague):
-    input_name = '7.praha_uzemi.geojson'
-    output_name = '7.praha_uzemi_.geojson'
+    fpath = praha / '7.praha_uzemi.geojson'
     name = 'NAZ_KU_P'
+
+
+class Test1(Land):
+    fpath = tests / '1.geojson'
+    w = 1000
+    h = 1000
+
+
+class Test2(Land):
+    fpath = tests / '2.geojson'
+    w = 1000
+    h = 1000
+
+
+class Test3(Land):
+    fpath = tests / '3.geojson'
+    w = 1000
+    h = 1000
+
+
+class Test4(Land):
+    fpath = files / 'tests' / '4.geojson'
+    w = 1000
+    h = 1000

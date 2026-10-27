@@ -6,7 +6,6 @@ from __future__ import annotations
 import json
 import os
 from typing import Self, override
-import unidecode
 
 from base.lands import Land
 from base.obj import Obj
@@ -26,16 +25,13 @@ class MapObj(Obj):
         super().__init__()
         os.chdir(os.path.dirname(__file__))
         self.klass = klass
-        self.svg_fpath = os.path.join(
-            settings.files,
-            os.path.splitext(self.klass.output_name)[0] + '.svg')
+        self.svg_fpath = klass.fpath.with_suffix('.svg')
         self.read_children()
         self.set_bbox()
         r.info(str(self))
 
     def __str__(self) -> str:
-        input_name = unidecode.unidecode(self.klass.input_name)
-        return f'{input_name}\n' \
+        return f'{self.klass.fpath.name}\n' \
             + f'{self.klass.w}x{self.klass.h}\n' \
             + f'{self.bbox}\n' \
             + f'{len(self.children)} paths\n' \
@@ -49,12 +45,11 @@ class MapObj(Obj):
             ...
         }
         """
-        fpath = settings.files / self.klass.input_name
-        if not fpath.exists():
-            r.error(f'File not found: {fpath}')
+        if not self.klass.fpath.exists():
+            r.error(f'File not found: {self.klass.fpath}')
             raise SystemExit
 
-        with open(fpath, 'r', encoding=settings.encoding) as f:
+        with open(self.klass.fpath, 'r', encoding=settings.encoding) as f:
             geojson = json.load(f)
         for feature in geojson['features']:
             p = feature['properties']
@@ -62,7 +57,8 @@ class MapObj(Obj):
             if self.klass.parent is not None:
                 if self.klass.parent in p and self.klass.id in p:
                     if p[self.klass.parent] in PARENTS:
-                        path_id = PARENTS[p[self.klass.parent]] + '_' + path_id
+                        path_id = PARENTS[p[self.klass.parent]] \
+                            + '_' + path_id
                     PARENTS[p[self.klass.id]] = path_id
             else:
                 if self.klass.id in p:
@@ -130,9 +126,8 @@ class MapObj(Obj):
         r.info('{} points after.\n'.format(counter))
 
     def __add__(self, map_obj: Self) -> Self:
-        s1: str = os.path.splitext(self.svg_fpath)[0]
-        s2: str = os.path.basename(
-            os.path.splitext(map_obj.klass.output_name)[0])
+        s1: str = self.klass.fpath.stem
+        s2: str = map_obj.klass.fpath.stem
         self.svg_fpath = s1 + '_' + s2 + '.svg'
 
         self.children.extend(map_obj.children)

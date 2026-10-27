@@ -10,18 +10,18 @@ good4 - 47s, broken cities and city parts
 .     - 29 s, broken cities and city parts
 """
 
-import pandas as pd
-import geopandas as gpd
 
-from base.lands \
-    import Regions, Districts, PrahaObvody, DistrictsWithPrague
+from base.lands import State1
 from core import Good1 as MapObj
 from services.log import initialize_logging
+
+
+"""
+import pandas as pd
+import geopandas as gpd
 import settings
-
-
 def dictricts_with_prague() -> None:
-    """Merge districts with Prague."""
+    # Merge districts with Prague.
 
     fpath = settings.files / Districts.input_name
     gdf = gpd.read_file(fpath)  # type: ignore
@@ -40,11 +40,12 @@ def dictricts_with_prague() -> None:
 
     mo = MapObj(DistrictsWithPrague)
     mo.run()
+"""
 
 
 if __name__ == '__main__':
     initialize_logging()
-    MapObj(Regions).run()
+    MapObj(State1).run()
     # MapObj(Districts).run()
     # MapObj(PrahaObvody).run()
     # dictricts_with_prague()

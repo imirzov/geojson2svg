@@ -5,69 +5,13 @@
 
 import sys
 
-from base.lands import Land
 from base.point import POINTS, Point
 from base.polygon import Polygon, find_overlapping_polygons
 from base.multipolygon import find_overlapping_multipolygons
 from core import Good4 as MapObj
+from base.lands import Test1
 from services.filters import Round
 from services.log import r
-
-
-class Qwe1(Land):
-    input_name = 'qwe1.geojson'
-    output_name = input_name
-    w = 1000
-    h = 1000
-
-
-class Qwe2(Land):
-    input_name = 'qwe2.geojson'
-    output_name = input_name
-    w = 1000
-    h = 1000
-
-
-class Qwe3(Land):
-    input_name = 'qwe3.geojson'
-    output_name = input_name
-    w = 1000
-    h = 1000
-
-
-class Qwe4(Land):
-    input_name = 'qwe4.geojson'
-    output_name = input_name
-    w = 1000
-    h = 1000
-
-
-class TestState(Land):
-    input_name = '0.state.geojson'
-    output_name = 'test_' + input_name
-
-
-class TestRegion(Land):
-    input_name = '1.regions.geojson'
-    output_name = 'test_' + input_name
-
-
-class TestDistrict(Land):
-    input_name = '2.districts.geojson'
-    output_name = 'test_' + input_name
-    parent = 'vusc'
-
-
-class TestCity(Land):
-    input_name = '3.cities.geojson'
-    output_name = 'test_' + input_name
-    parent = 'okres'
-
-
-class TestCityPart(Land):
-    input_name = '4.city_parts.geojson'
-    output_name = 'test_' + input_name
-    parent = 'obec'
 
 
 # def test():
@@ -195,7 +139,7 @@ def test() -> None:
     """Create SVG image from custom points.
     Coordinates are measured from top left display corner.
     """
-    m = MapObj(Qwe1)
+    m = MapObj(Test1)
     Round(m.get_points()).apply(precision=m.PRECISION)
     m.remove_close_points(m.PRECISION)
 
