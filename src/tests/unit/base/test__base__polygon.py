@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestPolygon(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestPolygon(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__base__polygon__create_polygon(self) -> None:
@@ -45,4 +45,4 @@ class TestPolygon(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

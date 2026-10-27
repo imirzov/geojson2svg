@@ -14,9 +14,8 @@ from typing import Any, Callable
 import unittest
 
 import core.utils
-import log
+from services.log import r, initialize_logging, log_time_delta
 import settings
-from settings import report as r
 
 t = ' ' * 4
 SEP = '__'
@@ -127,7 +126,7 @@ class Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     def test_self(self) -> None:
         msg = ''
@@ -175,4 +174,4 @@ class Test(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

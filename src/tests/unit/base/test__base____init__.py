@@ -5,7 +5,7 @@ import time
 import unittest
 
 from base import get_nested_list_depth
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestBase(unittest.TestCase):
@@ -13,9 +13,9 @@ class TestBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
-    def test__base____init____get_wrapping_depth(self) -> None:
+    def test__base____init____get_nested_list_depth(self) -> None:
         with self.subTest('float'):
             f = 1.23
             wd0 = get_nested_list_depth(f)
@@ -38,4 +38,4 @@ class TestBase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

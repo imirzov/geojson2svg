@@ -10,8 +10,8 @@ from base.point import POINTS, Point
 from base.polygon import Polygon, find_overlapping_polygons
 from base.multipolygon import find_overlapping_multipolygons
 from core import Good4 as MapObj
-from core.filters import Round
-from settings import report as r
+from services.filters import Round
+from services.log import r
 
 
 class Qwe1(Land):

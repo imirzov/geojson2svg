@@ -11,9 +11,8 @@ import traceback
 
 from base.polygon import Polygon
 from base.multipolygon import MultiPolygon
-import log
 from settings import files
-from settings import report as r
+from services.log import r, initialize_logging, log_time_delta
 
 GEOMETRY_TYPES = ('Polygon', 'MultiPolygon')
 
@@ -33,7 +32,7 @@ class Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
         cls._paths = sorted(files.rglob('*.geojson'))
 
     def test__geojsons(self) -> None:
@@ -57,4 +56,4 @@ class Test(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

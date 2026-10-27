@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestMultiPolygon(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestMultiPolygon(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__base__multipolygon__create_multipolygon(self) -> None:
@@ -37,4 +37,4 @@ class TestMultiPolygon(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

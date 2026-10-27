@@ -16,7 +16,7 @@ import geopandas as gpd
 from base.lands \
     import Regions, Districts, PrahaObvody, DistrictsWithPrague
 from core import Good1 as MapObj
-from log import initialize_logging
+from services.log import initialize_logging
 import settings
 
 

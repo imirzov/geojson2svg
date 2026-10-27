@@ -9,7 +9,8 @@ import logging
 from pathlib import Path
 
 import settings
-from settings import report as r
+
+r = logging.getLogger('report')
 
 
 def initialize_logging(erase: bool = True, test: bool = False,

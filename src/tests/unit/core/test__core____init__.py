@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestCore(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestCore(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__core____init____Dev__run(self) -> None:
@@ -49,4 +49,4 @@ class TestCore(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

@@ -18,7 +18,7 @@ pt = tuple[float, float]
 
 class Point(Obj):
 
-    def __init__(self, coordinates: pt, parent: Any | None = None) -> None:
+    def __init__(self, coordinates: pt, parent: Any = None) -> None:
         super().__init__()
         self.id_ = len(POINTS)
         self.x = coordinates[0]
@@ -62,7 +62,7 @@ class Point(Obj):
         return hash((self.x, self.y))
 
 
-def create_point(coordinates: pt, parent: Any | None = None) -> Point:
+def create_point(coordinates: pt, parent: Any = None) -> Point:
     pt = Point(coordinates, parent)
     POINTS[pt.id_] = pt
     return pt

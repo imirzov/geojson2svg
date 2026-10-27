@@ -8,7 +8,7 @@ from typing import Any, Union
 
 from base.lands import Region, District, City, CityPart
 import settings
-from settings import report as r
+from services.log import r
 
 GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
 

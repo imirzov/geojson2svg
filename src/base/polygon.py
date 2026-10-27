@@ -14,7 +14,7 @@ from base import get_nested_list_depth
 from base.bbox import BBox
 from base.obj import Obj
 from base.point import POINTS, Point, pt, create_point
-from settings import report as r
+from services.log import r
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon

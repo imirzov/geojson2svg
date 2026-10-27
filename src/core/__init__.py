@@ -5,7 +5,7 @@ from base.point import Point, merge_points_to
 from base.polygon import Polygon, find_overlapping_polygons
 from base.multipolygon import find_overlapping_multipolygons
 from base.mapobj import MapObj
-from core.filters import Round
+from services.filters import Round, RemoveSamePoints
 from core.utils import recursive_quad_merge, collapse_gap_1, collapse_gap_2
 
 
@@ -210,7 +210,7 @@ class Good4(MapObj):
         """
         self.convert_coords_to_px()
         Round(self.get_points()).apply(precision=self.PRECISION)
-        self.filter_points_with_same_coords()
+        RemoveSamePoints(self.get_points()).apply()
         self.generate_svg_code()
 
 

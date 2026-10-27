@@ -14,7 +14,7 @@ from base.point import POINTS, Point
 from base.multipolygon \
     import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
-from settings import report as r
+from services.log import r
 
 PARENTS: dict[int, str] = dict()  # id_: name
 
@@ -122,14 +122,6 @@ class MapObj(Obj):
                             continue
                     prev_pt = pt
 
-    def filter_points_with_same_coords(self) -> None:
-        for multipolygon in self.get_children():
-            for polygon in multipolygon.get_children():
-                points = polygon.get_children()
-                points = filter_points_with_same_coords(points)
-                coords = [[(pt.x, pt.y) for pt in points]]
-                polygon.set_children(coords)
-
     def count_points(self) -> None:
         counter = 0
         for multipolygon in self.get_children():
@@ -202,22 +194,3 @@ class MapObj(Obj):
         ]
         with open(self.svg_fpath, 'w', encoding=settings.encoding) as f:
             f.writelines(svg_code)
-
-
-def filter_points_with_same_coords(points: list[Point]) -> list[Point]:
-    filtered_points: list[Point] = []
-    for pt1 in points:
-        unique = True
-        for pt2 in filtered_points:
-            if pt1.x == pt2.x and pt1.y == pt2.y:
-                unique = False
-                polygon = pt1.parent
-                if polygon is None:
-                    r.warning(f'Point {pt1.id_} has no parent polygon.')
-                else:
-                    polygon.remove_point(pt1.id_)
-        if unique:
-            filtered_points.append(pt1)
-    r.debug('Before filtering: {}, after: {}'
-            .format(len(points), len(filtered_points)))
-    return filtered_points

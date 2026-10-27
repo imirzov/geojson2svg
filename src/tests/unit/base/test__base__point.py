@@ -6,7 +6,7 @@ import time
 import unittest
 
 from base.point import Point
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestPoint(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestPoint(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip("TODO: implement test")
     def test__base__point__create_point(self) -> None:
@@ -26,7 +26,7 @@ class TestPoint(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)
 
 
 class TestPoint__Point(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestPoint__Point(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip("TODO: implement test")
     def test__base__point__Point____str__(self) -> None:
@@ -65,4 +65,4 @@ class TestPoint__Point(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

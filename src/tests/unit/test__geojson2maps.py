@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestGeojson2Maps(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestGeojson2Maps(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
+        initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__geojson2maps__extract_features(self) -> None:
@@ -25,4 +25,4 @@ class TestGeojson2Maps(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

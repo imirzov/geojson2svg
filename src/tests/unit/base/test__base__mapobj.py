@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import log
+from services.log import initialize_logging, log_time_delta
 
 
 class TestMapObj(unittest.TestCase):
@@ -9,11 +9,7 @@ class TestMapObj(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
-        log.initialize_logging()
-
-    @unittest.skip('TODO: implement test')
-    def test__base__mapobj__filter_points_with_same_coords(self) -> None:
-        pass
+        initialize_logging()
 
     @unittest.skip('TODO: implement test')
     def test__base__mapobj__MapObj____add__(self) -> None:
@@ -29,11 +25,6 @@ class TestMapObj(unittest.TestCase):
 
     @unittest.skip('TODO: implement test')
     def test__base__mapobj__MapObj__count_points(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
-    def test__base__mapobj__MapObj__filter_points_with_same_coords(self) \
-            -> None:
         pass
 
     @unittest.skip('TODO: implement test')
@@ -62,4 +53,4 @@ class TestMapObj(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        log.log_time_delta(cls.start)
+        log_time_delta(cls.start)

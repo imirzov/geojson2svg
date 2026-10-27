@@ -7,7 +7,7 @@ import json
 from typing import Any, Union
 
 import settings
-from settings import report as r
+from services.log import r
 from base.lands import Region, District, City, CityPart
 
 GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
