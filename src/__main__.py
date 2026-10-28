@@ -10,10 +10,12 @@ good4 - 47s, broken cities and city parts
 .     - 29 s, broken cities and city parts
 """
 
+import traceback
 
-from base.lands import State1
-from core import Good1 as MapObj
-from services.log import initialize_logging
+from base.lands import State1, State2, State3
+from base.svg import Svg
+from core import Good0 as MapObj
+from services.log import r, initialize_logging
 
 
 """
@@ -45,12 +47,12 @@ def dictricts_with_prague() -> None:
 
 if __name__ == '__main__':
     initialize_logging()
-    MapObj(State1).run()
-    # MapObj(Districts).run()
-    # MapObj(PrahaObvody).run()
-    # dictricts_with_prague()
-    # MapObj(Cities).run()
-    # MapObj(CityParts).run()
-    # MapObj(PrahaCasti).run()
-    # MapObj(PrahaUzemi).run()
-    pass
+    for s in (State1, State2, State3):
+        try:
+            r.info(s.fpath)
+            mo = MapObj(s)
+            r.info(mo.bbox)
+            mo.run()
+            Svg(mo).run()
+        except Exception:
+            r.error(traceback.format_exc())

@@ -5,7 +5,7 @@
 import time
 import unittest
 
-from base.point import Point
+from base.point import POINTS, Point, create_point
 from services.log import initialize_logging, log_time_delta
 
 
@@ -16,9 +16,22 @@ class TestPoint(unittest.TestCase):
         cls.start = time.perf_counter()
         initialize_logging()
 
-    @unittest.skip("TODO: implement test")
     def test__base__point__create_point(self) -> None:
-        ...
+        points = [
+            create_point((float(i), float(i)))
+            for i in range(3)
+        ]
+        POINTS.pop(points[0].id_)
+
+        try:
+            new_point = create_point((3.0, 3.0))
+
+            self.assertIs(POINTS[points[2].id_], points[2])
+            self.assertIs(POINTS[new_point.id_], new_point)
+            self.assertNotEqual(new_point.id_, points[2].id_)
+        finally:
+            for point in points:
+                POINTS.pop(point.id_, None)
 
     @unittest.skip("TODO: implement test")
     def test__base__point__merge_points_to(self) -> None:

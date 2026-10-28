@@ -107,8 +107,8 @@ def get_border_points(
         counter += 1
         points1 = pg1.get_children()
         points2 = pg2.get_children()
-        print(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
-              + ' ' * 8 + '\r', end='')
+        r.info(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
+               + ' ' * 8 + '\r')
         border_points1: list[Point] = []
         border_points2: list[Point] = []
         for pt1 in points1:

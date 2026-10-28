@@ -3,12 +3,14 @@
 
 from __future__ import annotations
 
+from math import inf
+
 
 class BBox:
 
     def __init__(self,
-                 xmin: float = 0, xmax: float = 0,
-                 ymin: float = 0, ymax: float = 0) -> None:
+                 xmin: float = inf, xmax: float = -inf,
+                 ymin: float = inf, ymax: float = -inf) -> None:
         self.xmin = xmin
         self.xmax = xmax
         self.ymin = ymin
@@ -26,4 +28,5 @@ class BBox:
 
     def __str__(self) -> str:
         return f'BBox(xmin={self.xmin}, xmax={self.xmax}, ' \
-                    f'ymin={self.ymin}, ymax={self.ymax})'
+                    f'ymin={self.ymin}, ymax={self.ymax})\n' \
+                    f'dx={self.dx}, dy={self.dy}'

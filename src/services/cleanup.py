@@ -151,7 +151,6 @@ def main() -> None:
         d = json.loads(fpath.read_text(encoding=settings.encoding))
         d = recursively_remove_keys(d, list_)
 
-        # print(json.dumps(d, ensure_ascii=False, indent=2))
         fpath2 = str(fpath)[:-8] + '_.geojson'
         with open(fpath2, 'w', encoding=settings.encoding) as f:
             json.dump(d, f, ensure_ascii=False)

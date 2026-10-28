@@ -11,12 +11,12 @@ from __future__ import annotations
 from typing import override
 
 from base import get_nested_list_depth
-from base.bbox import BBox
 from base.obj import Obj
 from base.point import POINTS, Point, pt_type, create_point
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
+_next_id = 0
 pg_type = list[list[pt_type]]
 
 
@@ -25,10 +25,11 @@ class Polygon(Obj):
 
     def __init__(self, coordinates: pg_type) -> None:
         super().__init__()
-        self.id_ = len(POLYGONS)
+        global _next_id
+        self.id_ = _next_id
+        _next_id += 1
         self.set_children(coordinates)
         self.set_bbox()
-        self.converted = False
 
     def set_children(self, coordinates: pg_type) -> None:
         assert is_polygon(coordinates), str(coordinates)[:100]
@@ -55,15 +56,6 @@ class Polygon(Obj):
         assert id_ in self.children, \
             f'Polygon {self.id_} has no point {id_}'
         self.children.remove(id_)
-
-    def convert_coords_to_px(self, map_bbox: BBox,
-                             w: float, h: float) -> None:
-        if not self.converted and map_bbox.xmax != map_bbox.xmin \
-                and map_bbox.ymax != map_bbox.ymin:
-            for p in self.get_children():
-                p.x = (p.x - map_bbox.xmin) / map_bbox.dx * w
-                p.y = (map_bbox.ymax - p.y) / map_bbox.dy * h
-        self.converted = True
 
 
 def create_polygon(coordinates: pg_type = []) -> Polygon:

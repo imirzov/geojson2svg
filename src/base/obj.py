@@ -53,3 +53,10 @@ class Obj(ABC):
             return False
 
         return f(self, obj) or f(obj, self)
+
+    # def convert_coords_to_px(self) -> None:
+    #     """Convert latitude and longitude GeoJson coords
+    #     to Land's width (w) and height (h) in pixels.
+    #     """
+    #     for ch in self.get_children():
+    #         ch.convert_coords_to_px()

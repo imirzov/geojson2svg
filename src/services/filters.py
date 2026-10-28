@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Point filters: perform various operations on points."""
+"""Point filters: perform various operations on polygon's points."""
 
 from abc import ABC
 
@@ -56,23 +56,3 @@ class RemoveSamePoints(Filter):
                 filtered_points.append(pt1)
         r.debug('Before filtering: {}, after: {}'
                 .format(len(self.points), len(filtered_points)))
-
-
-class Round(Filter):
-    """Rounds each point's coordinates according to the given precision."""
-
-    def apply(self, precision: int) -> None:
-        for pt in self.points:
-            pt.round(precision)
-
-
-class Smooth(Filter):
-    """Averages each point with its 2 neighbors."""
-
-    def apply(self) -> None:
-        for i in range(len(self.points) - 2):
-            pt0 = self.points[i]
-            pt1 = self.points[i + 1]
-            pt2 = self.points[i + 2]
-            pt1.x = (pt0.x + pt2.x) / 2
-            pt1.y = (pt0.y + pt2.y) / 2

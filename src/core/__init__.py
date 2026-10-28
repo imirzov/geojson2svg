@@ -5,21 +5,21 @@ from base.point import Point, merge_points_to
 from base.polygon import Polygon, find_overlapping_polygons
 from base.multipolygon import find_overlapping_multipolygons
 from base.mapobj import MapObj
-from services.filters import Round, RemoveSamePoints, RemoveNeedles
+from services.filters import RemoveSamePoints, RemoveNeedles
 from services.log import r
+from services.transform import Round, Coords2Px
 from core.utils import recursive_quad_merge, collapse_gap_1, collapse_gap_2
 
 
 class Good0(MapObj):
 
     def run(self) -> None:
-        self.convert_coords_to_px()
-        Round(self.get_points()).apply(precision=1)
+        Coords2Px(self).apply()
+        Round(self).apply(precision=1)
         for mp in self.get_children():
             for polygon in mp.get_children():
                 RemoveNeedles(polygon.get_points()).apply()
         r.info(f'Point count: {len(self.get_points())}')
-        self.generate_svg_code()
 
 
 class Good1(MapObj):
@@ -27,7 +27,7 @@ class Good1(MapObj):
     PRECISION: int = 3  # px
 
     def run(self) -> None:
-        self.convert_coords_to_px()
+        Coords2Px(self).apply()
 
         # Find overlapping multipolygons
         multipolygons = self.get_children()
@@ -43,12 +43,11 @@ class Good1(MapObj):
 
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         self.remove_close_points(self.PRECISION)
-        Round(self.get_points()).apply(precision=1)
+        Round(self).apply(precision=1)
         for mp in self.get_children():
             for polygon in mp.get_children():
                 RemoveNeedles(polygon.get_points()).apply()
         r.info(f'Point count: {len(self.get_points())}')
-        self.generate_svg_code()
 
     def collapse_gaps(self, mergable_polygon_pairs:
                       list[tuple[Polygon, Polygon]],
@@ -64,8 +63,8 @@ class Good1(MapObj):
         counter = 0
         for pg1, pg2 in mergable_polygon_pairs:
             counter += 1
-            print(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
-                  + ' ' * 8 + '\r', end='')
+            r.info(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
+                   + ' ' * 8 + '\r')
 
             points1 = pg1.get_children()
             points2 = pg2.get_children()
@@ -98,8 +97,8 @@ class Good2(MapObj):
 
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
-        self.convert_coords_to_px()
-        Round(self.get_points()).apply(precision=self.PRECISION)  # !important!
+        Coords2Px(self).apply()
+        Round(self).apply(precision=self.PRECISION)  # !important!
         self.remove_close_points(self.PRECISION)  # !important!
 
         # Find overlapping multipolygons
@@ -116,7 +115,6 @@ class Good2(MapObj):
 
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         r.info(f'Point count: {len(self.get_points())}')
-        self.generate_svg_code()
 
     def collapse_gaps(self, mergable_polygon_pairs:
                       list[tuple[Polygon, Polygon]],
@@ -129,8 +127,8 @@ class Good2(MapObj):
             counter += 1
             points1 = pg1.get_points()
             points2 = pg2.get_points()
-            print(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
-                  + ' '*8 + '\r', end='')
+            r.info(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
+                   + ' '*8 + '\r')
             merge_cloud1: list[Point] = []
             merge_cloud2: list[Point] = []
             for pt1 in points1:
@@ -152,8 +150,8 @@ class Good3(MapObj):
 
     def run(self) -> None:
         """NOTE Quite fast in compraison with _good1."""
-        self.convert_coords_to_px()
-        Round(self.get_points()).apply(precision=self.PRECISION)
+        Coords2Px(self).apply()
+        Round(self).apply(precision=self.PRECISION)
         self.remove_close_points(self.PRECISION)
 
         # Find overlapping multipolygons
@@ -173,7 +171,6 @@ class Good3(MapObj):
             collapse_gap_2(points1, points2, self.PRECISION)
 
         r.info(f'Point count: {len(self.get_points())}')
-        self.generate_svg_code()
 
     def get_border_point_clouds(
             self, mergable_polygon_pairs:
@@ -186,8 +183,8 @@ class Good3(MapObj):
             counter += 1
             points1 = pg1.get_children()
             points2 = pg2.get_children()
-            print(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
-                  + ' '*8 + '\r', end='')
+            r.info(f'Polygon pair {counter} of {len(mergable_polygon_pairs)}'
+                   + ' '*8 + '\r')
             merge_cloud1: list[Point] = []
             merge_cloud2: list[Point] = []
             for pt1 in points1:
@@ -213,10 +210,9 @@ class Good4(MapObj):
         """NOTE For performance
         remove duplicated points before the border collapse!
         """
-        self.convert_coords_to_px()
-        Round(self.get_points()).apply(precision=self.PRECISION)
+        Coords2Px(self).apply()
+        Round(self).apply(precision=self.PRECISION)
         RemoveSamePoints(self.get_points()).apply()
-        self.generate_svg_code()
 
 
 class Dev(MapObj):
@@ -224,9 +220,8 @@ class Dev(MapObj):
     PRECISION: int = 1  # px
 
     def run(self) -> None:
-        self.convert_coords_to_px()
-        Round(self.get_points()).apply(precision=self.PRECISION)
+        Coords2Px(self).apply()
+        Round(self).apply(precision=self.PRECISION)
         recursive_quad_merge(self.get_points(), self.PRECISION * 2)
         self.remove_close_points(self.PRECISION)
         r.info(f'Point count: {len(self.get_points())}')
-        self.generate_svg_code()

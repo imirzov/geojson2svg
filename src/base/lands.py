@@ -29,14 +29,17 @@ class Land:
 
 class State1(Land):
     fpath = state / '1.geojson'
+    name = 'nazev'
 
 
 class State2(Land):
     fpath = state / '2.geojson'
+    name = 'name'
 
 
 class State3(Land):
     fpath = state / '3.geojson'
+    name = 'name'
 
 
 class Region1(Land):

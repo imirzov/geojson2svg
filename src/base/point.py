@@ -13,6 +13,7 @@ from base.obj import Obj
 
 
 POINTS: dict[str | int, Point] = dict()  # id_: (x, y)
+_next_id = 0
 pt_type = tuple[float, float]
 
 
@@ -20,7 +21,9 @@ class Point(Obj):
 
     def __init__(self, coordinates: pt_type, parent: Any = None) -> None:
         super().__init__()
-        self.id_ = len(POINTS)
+        global _next_id
+        self.id_ = _next_id
+        _next_id += 1
         self.x = coordinates[0]
         self.y = coordinates[1]
         self.parent = parent
@@ -43,11 +46,11 @@ class Point(Obj):
         self.bbox = BBox(self.x, self.x, self.y, self.y)
 
     def close_to(self, pt: Self, precision: int) -> bool:
-        if abs(self.x - pt.x) > precision:
-            return False
-        if abs(self.y - pt.y) > precision:
-            return False
-        return True
+        dx = abs(self.x - pt.x)
+        dy = abs(self.y - pt.y)
+        if dx <= precision and dy <= precision:
+            return True
+        return False
 
     def __str__(self) -> str:
         return 'Point {} x={} y={} tied_to={} utmost={}' \

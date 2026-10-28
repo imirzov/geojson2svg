@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Represents a collection of multiple separate polygons
-(e.g., an archipelago of islands)."""
+"""Represents a collection of multiple separate polygons."""
 
 from __future__ import annotations
 from typing import Any, override
@@ -14,6 +13,7 @@ from base.point import Point
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
+_next_id = 0
 mp_type = list[pg_type]
 
 
@@ -22,6 +22,9 @@ class MultiPolygon(Obj):
 
     def __init__(self, path_id: str, coordinates: mp_type) -> None:
         super().__init__()
+        global _next_id
+        self.id_ = _next_id
+        _next_id += 1
         self.path_id = path_id
         self.set_children(coordinates)
         self.set_bbox()
@@ -50,9 +53,9 @@ class MultiPolygon(Obj):
 
 
 def create_multipolygon(path_id: str, coordinates: mp_type) -> MultiPolygon:
-    multipolygon = MultiPolygon(path_id, coordinates)
-    MULTIPOLYGONS[path_id] = multipolygon
-    return multipolygon
+    mp = MultiPolygon(path_id, coordinates)
+    MULTIPOLYGONS[path_id] = mp
+    return mp
 
 
 def find_overlapping_multipolygons(
