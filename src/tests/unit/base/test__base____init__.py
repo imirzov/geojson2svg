@@ -32,8 +32,8 @@ class TestBase(unittest.TestCase):
             wd1 = get_nested_list_depth(pg_coordinates)
             self.assertEqual(wd1, 3)
         with self.subTest('multi-polygon'):
-            mpg_coordinates = [pg_coordinates]
-            wd2 = get_nested_list_depth(mpg_coordinates)
+            mp_coordinates = [pg_coordinates]
+            wd2 = get_nested_list_depth(mp_coordinates)
             self.assertEqual(wd2, 4)
 
     @classmethod

@@ -6,6 +6,8 @@ import settings
 
 from base.mapobj import MapObj
 
+pad = ' ' * 4
+
 
 class Svg:
     svg_code: str = (
@@ -13,27 +15,31 @@ class Svg:
         '<svg xmlns="http://www.w3.org/2000/svg" '
         'xmlns:xlink="http://www.w3.org/1999/xlink" '
         'viewBox="0 0 $w $h">\n'
-        # pad + '<style>\n',
-        # pad * 2 + 'path {fill: black; stroke: white; '
-        #           'stroke-width: 0.2px}\n',
-        # pad * 2 + 'path#plzensky-kraj {fill: transparent; '
-        #           'stroke: black; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#karlovarsky-kraj {fill: transparent; '
-        #           'stroke: red; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#pardubicky-kraj {fill: transparent; '
-        #           'stroke: black; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#kralovehradecky-kraj {fill: transparent; '
-        #           'stroke: red; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#stredocesky-kraj {fill: transparent; '
-        #           'stroke: black; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#jihocesky-kraj {fill: transparent; '
-        #           'stroke: red; stroke-width: 0.5px}\n',
-        # pad * 2 + 'path#ustecky-kraj {fill: transparent; stroke: blue; '
-        #           'stroke-width: 0.5px}\n'
-        # pad + '</style>\n'
+        '$style\n'
         '$paths\n'
         '</svg>'
     )
+    style: str = (
+        pad + '<style>\n' +
+        pad * 2 + 'path {fill: black; stroke: white; '
+                  'stroke-width: 0.2px}\n' +
+        pad + '</style>\n'
+    )
+
+    # pad * 2 + 'path#plzensky-kraj {fill: transparent; '
+    #           'stroke: black; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#karlovarsky-kraj {fill: transparent; '
+    #           'stroke: red; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#pardubicky-kraj {fill: transparent; '
+    #           'stroke: black; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#kralovehradecky-kraj {fill: transparent; '
+    #           'stroke: red; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#stredocesky-kraj {fill: transparent; '
+    #           'stroke: black; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#jihocesky-kraj {fill: transparent; '
+    #           'stroke: red; stroke-width: 0.5px}\n',
+    # pad * 2 + 'path#ustecky-kraj {fill: transparent; stroke: blue; '
+    #           'stroke-width: 0.5px}\n'
 
     def __init__(self, map_obj: MapObj) -> None:
         self.map_obj = map_obj
@@ -44,7 +50,6 @@ class Svg:
 
     def run(self, show_ids: bool = False) -> None:
         """Create paths and place them into SVG code."""
-        pad = ' ' * 4
         svg_paths: list[str] = []
         for mp in self.map_obj.get_children():
             coords = ''
@@ -69,6 +74,7 @@ class Svg:
         #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
         #                      'r="0.5" style="fill:red;" />\n')
         paths = ''.join(svg_paths)
-        svg_code = self.t.substitute(w=self.w, h=self.h, paths=paths)
+        svg_code = self.t.substitute(w=self.w, h=self.h,
+                                     paths=paths, style=self.style)
         with open(self.fpath, 'w', encoding=settings.encoding) as f:
             f.writelines(svg_code)

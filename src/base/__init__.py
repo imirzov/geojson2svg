@@ -8,7 +8,7 @@ def get_nested_list_depth(list_: Any) -> int:
     """Returns the wrapping depth of a nested list.
     Takes into account only the first list element.
     """
-    if not isinstance(list_, list):
+    if not isinstance(list_, (list, tuple)):
         return 0
     else:
         if not list_:

@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
                 with path.open(encoding='utf-8') as f:
                     data: dict[str, Any] = json.load(f)
                 for i, feature in enumerate(data.get('features', [])):
-                    props = feature.get('properties') or {}
+                    props: dict[str, Any] = feature.get('properties') or {}
                     self.assertIn(
                         'nazev',
                         props,
