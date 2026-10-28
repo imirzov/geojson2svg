@@ -5,12 +5,13 @@
 
 import sys
 
+from base.lands import Test1
+from base.multipolygon import find_overlapping_multipolygons
 from base.point import POINTS, Point
 from base.polygon import Polygon, find_overlapping_polygons
-from base.multipolygon import find_overlapping_multipolygons
+from base.svg import Svg
 from core import Good4 as MapObj
-from base.lands import Test1
-from services.filters import Round
+from services.transform import Round
 from services.log import r
 
 
@@ -139,12 +140,12 @@ def test() -> None:
     """Create SVG image from custom points.
     Coordinates are measured from top left display corner.
     """
-    m = MapObj(Test1)
-    Round(m.get_points()).apply(precision=m.PRECISION)
-    m.remove_close_points(m.PRECISION)
+    mo = MapObj(Test1)
+    Round(mo).apply(precision=mo.PRECISION)
+    mo.remove_close_points(mo.PRECISION)
 
     # Find overlapping multipolygons
-    multipolygons = m.get_children()
+    multipolygons = mo.get_children()
     mergable_multipolygon_pairs =\
         find_overlapping_multipolygons(multipolygons)
 
@@ -156,9 +157,9 @@ def test() -> None:
         mergable_polygon_pairs.extend(list_)
 
     for points1, points2 in \
-            get_border_points(mergable_polygon_pairs, m.PRECISION):
-        points1, points2 = tie_border_points(points1, points2, m.PRECISION)
-        points2, points1 = tie_border_points(points2, points1, m.PRECISION)
+            get_border_points(mergable_polygon_pairs, mo.PRECISION):
+        points1, points2 = tie_border_points(points1, points2, mo.PRECISION)
+        points2, points1 = tie_border_points(points2, points1, mo.PRECISION)
         points1 = remove_points_without_pair(points1)
         points2 = remove_points_without_pair(points2)
         points1 = check_order(points1)
@@ -166,4 +167,4 @@ def test() -> None:
         while points1 and i > 0:
             i -= 1
             points1 = check_order(points1)
-    m.generate_svg_code(show_ids=True)
+    Svg(mo).run(show_ids=True)
