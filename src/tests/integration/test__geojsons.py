@@ -54,6 +54,20 @@ class Test(unittest.TestCase):
                         r.error(msg)
                         self.fail()
 
+    def test__nazev_in_properties(self) -> None:
+        self.assertTrue(self._paths, f'No geojson files in {files}')
+        for path in self._paths:
+            with self.subTest(str(path.relative_to(files))):
+                with path.open(encoding='utf-8') as f:
+                    data: dict[str, Any] = json.load(f)
+                for i, feature in enumerate(data.get('features', [])):
+                    props = feature.get('properties') or {}
+                    self.assertIn(
+                        'nazev',
+                        props,
+                        f'Feature #{i} has no "nazev" in properties',
+                    )
+
     @classmethod
     def tearDownClass(cls) -> None:
         log_time_delta(cls.start)

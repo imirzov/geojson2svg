@@ -11,11 +11,14 @@ good4 - 47s, broken cities and city parts
 """
 
 import traceback
+from settings import files
 
+# from base.lands import Region1, Region2_, Region2, Region3, Region4
 from base.lands import State1, State2, State3
 from base.svg import Svg
 from core import Good0 as MapObj
 from services.log import r, initialize_logging
+from utils.format_geojsons import main as format_geojsons
 
 
 """
@@ -47,6 +50,8 @@ def dictricts_with_prague() -> None:
 
 if __name__ == '__main__':
     initialize_logging()
+    format_geojsons(folder=files / 'state')
+    # for s in (Region1, Region2_, Region2, Region3, Region4):
     for s in (State1, State2, State3):
         try:
             r.info(s.fpath)

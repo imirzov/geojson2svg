@@ -12,7 +12,7 @@
       "type": "Feature",
       "properties": {
         "kod": 1,
-        "nazev": "\u010cesk\u00e1 republika"
+        "name": "Česká republika"
       },
       "geometry": {
         "type": "MultiPolygon",

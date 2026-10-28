@@ -23,23 +23,12 @@ class Land:
     w = 2000
     h = 1155
     id = 'kod'
-    name = 'nazev'
+    name = 'name'
     parent = None
 
 
 class State1(Land):
     fpath = state / '1.geojson'
-    name = 'nazev'
-
-
-class State2(Land):
-    fpath = state / '2.geojson'
-    name = 'name'
-
-
-class State3(Land):
-    fpath = state / '3.geojson'
-    name = 'name'
 
 
 class Region1(Land):
