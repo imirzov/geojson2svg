@@ -13,25 +13,24 @@ from typing import override
 from base import get_nested_list_depth
 from base.bbox import BBox
 from base.obj import Obj
-from base.point import POINTS, Point, pt, create_point
-from services.log import r
+from base.point import POINTS, Point, pt_type, create_point
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
-pg = list[list[pt]]
+pg_type = list[list[pt_type]]
 
 
 class Polygon(Obj):
     """Parent of Point, consists of multiple Point objects."""
 
-    def __init__(self, coordinates: pg) -> None:
+    def __init__(self, coordinates: pg_type) -> None:
         super().__init__()
         self.id_ = len(POLYGONS)
         self.set_children(coordinates)
         self.set_bbox()
         self.converted = False
 
-    def set_children(self, coordinates: pg) -> None:
+    def set_children(self, coordinates: pg_type) -> None:
         assert is_polygon(coordinates), str(coordinates)[:100]
         for ring in coordinates:
             for x, y in ring:
@@ -47,20 +46,15 @@ class Polygon(Obj):
         return self.get_children()
 
     def remove_point(self, id_: int) -> None:
-        a = id_ in POINTS
-        b = id_ in self.children
-        if not a:
-            r.warning(f'Point {id_} not found in POINTS.')
-        if not b:
-            r.warning(f'Polygon {self.id_} has no point {id_}')
-        if a:
-            pt = POINTS[id_]
-            if pt.utmost:
-                r.warning(f'Point {id_} is utmost and cannot be removed.')
-            else:
-                POINTS.pop(id_)
-                if b:
-                    self.children.remove(id_)
+        assert id_ in POINTS, \
+            f'Point {id_} not found in POINTS.'
+        pt = POINTS[id_]
+        assert pt.utmost is False, \
+            f'Point {id_} is utmost and cannot be removed.'
+        POINTS.pop(id_)
+        assert id_ in self.children, \
+            f'Polygon {self.id_} has no point {id_}'
+        self.children.remove(id_)
 
     def convert_coords_to_px(self, map_bbox: BBox,
                              w: float, h: float) -> None:
@@ -72,7 +66,7 @@ class Polygon(Obj):
         self.converted = True
 
 
-def create_polygon(coordinates: pg = []) -> Polygon:
+def create_polygon(coordinates: pg_type = []) -> Polygon:
     polygon = Polygon(coordinates)
     POLYGONS[polygon.id_] = polygon
     return polygon
@@ -90,5 +84,5 @@ def find_overlapping_polygons(polygons: list[Polygon]) \
     return overlapping_pairs
 
 
-def is_polygon(coordinates: pg) -> bool:
+def is_polygon(coordinates: pg_type) -> bool:
     return get_nested_list_depth(coordinates) == 3

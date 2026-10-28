@@ -13,7 +13,6 @@ from base.point import POINTS, Point
 from base.multipolygon \
     import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
-from services.log import r
 
 PARENTS: dict[int, str] = dict()  # id_: name
 
@@ -28,7 +27,6 @@ class MapObj(Obj):
         self.svg_fpath = klass.fpath.with_suffix('.svg')
         self.read_children()
         self.set_bbox()
-        r.info(str(self))
 
     def __str__(self) -> str:
         return f'{self.klass.fpath.name}\n' \
@@ -45,9 +43,8 @@ class MapObj(Obj):
             ...
         }
         """
-        if not self.klass.fpath.exists():
-            r.error(f'File not found: {self.klass.fpath}')
-            raise SystemExit
+        assert self.klass.fpath.exists(), \
+            f'File not found: {self.klass.fpath}'
 
         with open(self.klass.fpath, 'r', encoding=settings.encoding) as f:
             geojson = json.load(f)
@@ -92,20 +89,6 @@ class MapObj(Obj):
                 polygon.convert_coords_to_px(
                     self.bbox, self.klass.w, self.klass.h)
 
-    def remove_needles(self) -> None:
-        for multipolygon in self.get_children():
-            for polygon in multipolygon.get_children():
-                point_ids_to_remove: set[int] = set()
-                points = polygon.get_children()
-                for i in range(len(points) - 3):
-                    pt0 = points[i]
-                    pt1 = points[i + 1]
-                    pt2 = points[i + 2]
-                    if pt0.x == pt2.x and pt0.y == pt2.y:
-                        point_ids_to_remove.add(pt1.id_)
-                for id_ in point_ids_to_remove:
-                    polygon.remove_point(id_)
-
     def remove_close_points(self, precision: int) -> None:
         """Remove close points (within precision)."""
         for multipolygon in self.get_children():
@@ -117,13 +100,6 @@ class MapObj(Obj):
                             polygon.remove_point(pt.id_)
                             continue
                     prev_pt = pt
-
-    def count_points(self) -> None:
-        counter = 0
-        for multipolygon in self.get_children():
-            for polygon in multipolygon.get_children():
-                counter += len(polygon.get_children())
-        r.info('{} points after.\n'.format(counter))
 
     def __add__(self, map_obj: Self) -> Self:
         s1: str = self.klass.fpath.stem
@@ -157,7 +133,6 @@ class MapObj(Obj):
         #                      'r="0.5" style="fill:black;" />\n')
         # for id_ in DISORDERED_POINTS:
         #     pt = POINTS[id_]
-        #     r.debug(f'[{pt.x}, {pt.y}]')
         #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
         #                      'r="0.5" style="fill:red;" />\n')
         # TODO remove CSS

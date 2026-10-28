@@ -5,7 +5,8 @@ from base.point import Point, merge_points_to
 from base.polygon import Polygon, find_overlapping_polygons
 from base.multipolygon import find_overlapping_multipolygons
 from base.mapobj import MapObj
-from services.filters import Round, RemoveSamePoints
+from services.filters import Round, RemoveSamePoints, RemoveNeedles
+from services.log import r
 from core.utils import recursive_quad_merge, collapse_gap_1, collapse_gap_2
 
 
@@ -14,8 +15,10 @@ class Good0(MapObj):
     def run(self) -> None:
         self.convert_coords_to_px()
         Round(self.get_points()).apply(precision=1)
-        self.remove_needles()
-        self.count_points()
+        for mp in self.get_children():
+            for polygon in mp.get_children():
+                RemoveNeedles(polygon.get_points()).apply()
+        r.info(f'Point count: {len(self.get_points())}')
         self.generate_svg_code()
 
 
@@ -41,8 +44,10 @@ class Good1(MapObj):
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         self.remove_close_points(self.PRECISION)
         Round(self.get_points()).apply(precision=1)
-        self.remove_needles()
-        self.count_points()
+        for mp in self.get_children():
+            for polygon in mp.get_children():
+                RemoveNeedles(polygon.get_points()).apply()
+        r.info(f'Point count: {len(self.get_points())}')
         self.generate_svg_code()
 
     def collapse_gaps(self, mergable_polygon_pairs:
@@ -110,7 +115,7 @@ class Good2(MapObj):
             mergable_polygon_pairs.extend(list_)
 
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
-        self.count_points()
+        r.info(f'Point count: {len(self.get_points())}')
         self.generate_svg_code()
 
     def collapse_gaps(self, mergable_polygon_pairs:
@@ -167,7 +172,7 @@ class Good3(MapObj):
                 mergable_polygon_pairs, self.PRECISION):
             collapse_gap_2(points1, points2, self.PRECISION)
 
-        self.count_points()
+        r.info(f'Point count: {len(self.get_points())}')
         self.generate_svg_code()
 
     def get_border_point_clouds(
@@ -223,5 +228,5 @@ class Dev(MapObj):
         Round(self.get_points()).apply(precision=self.PRECISION)
         recursive_quad_merge(self.get_points(), self.PRECISION * 2)
         self.remove_close_points(self.PRECISION)
-        self.count_points()
+        r.info(f'Point count: {len(self.get_points())}')
         self.generate_svg_code()

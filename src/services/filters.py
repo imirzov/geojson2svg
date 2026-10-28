@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Point filters."""
+"""Point filters: perform various operations on points."""
 
 from abc import ABC
 
@@ -20,23 +20,21 @@ class Filter(ABC):
 
 
 class RemoveNeedles(Filter):
-    """Removes points that form sharp angles (needles)."""
+    """Needle is 3 points where first and third have the same
+    coordinates. So 2nd and 3rd point have to be removed."""
 
-    # def apply(self, angle_threshold: float) -> None:
-    #     for mp in self.get_children():
-    #         for pg in mp.get_children():
-    #             point_ids_to_remove: set[int] = set()
-    #             points = pg.get_children()
-    #             for i in range(len(points) - 3):
-    #                 pt0 = points[i]
-    #                 pt1 = points[i + 1]
-    #                 pt2 = points[i + 2]
-    #                 if pt0.x == pt2.x and pt0.y == pt2.y:
-    #                     point_ids_to_remove.add(pt1.id_)
-    #             for id_ in point_ids_to_remove:
-    #                 pg.remove_point(id_)
-
-    pass
+    def apply(self) -> None:
+        points_to_remove: set[Point] = set()
+        for i in range(len(self.points) - 3):
+            pt0 = self.points[i]
+            pt1 = self.points[i + 1]
+            pt2 = self.points[i + 2]
+            if pt0.x == pt2.x and pt0.y == pt2.y:
+                points_to_remove.add(pt1)
+                points_to_remove.add(pt2)
+        for pt in points_to_remove:
+            pg: Polygon = pt.parent
+            pg.remove_point(pt.id_)
 
 
 class RemoveSamePoints(Filter):
@@ -49,11 +47,11 @@ class RemoveSamePoints(Filter):
             for pt2 in filtered_points:
                 if pt1.x == pt2.x and pt1.y == pt2.y:
                     unique = False
-                    polygon: Polygon | None = pt1.parent
-                    if polygon is None:
+                    pg: Polygon | None = pt1.parent
+                    if pg is None:
                         r.warning(f'Point {pt1.id_} has no parent polygon.')
                     else:
-                        polygon.remove_point(pt1.id_)
+                        pg.remove_point(pt1.id_)
             if unique:
                 filtered_points.append(pt1)
         r.debug('Before filtering: {}, after: {}'
@@ -69,7 +67,7 @@ class Round(Filter):
 
 
 class Smooth(Filter):
-    """Averages each point with its neighbors."""
+    """Averages each point with its 2 neighbors."""
 
     def apply(self) -> None:
         for i in range(len(self.points) - 2):

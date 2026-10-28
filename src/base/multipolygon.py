@@ -9,24 +9,24 @@ from typing import Any, override
 
 from base import get_nested_list_depth
 from base.obj import Obj
-from base.polygon import POLYGONS, pg, Polygon, create_polygon
+from base.polygon import POLYGONS, pg_type, Polygon, create_polygon
 from base.point import Point
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon
-mp = list[pg]
+mp_type = list[pg_type]
 
 
 class MultiPolygon(Obj):
     """Parent of Polygon, consists of multiple Polygon objects."""
 
-    def __init__(self, path_id: str, coordinates: mp) -> None:
+    def __init__(self, path_id: str, coordinates: mp_type) -> None:
         super().__init__()
         self.path_id = path_id
         self.set_children(coordinates)
         self.set_bbox()
 
-    def set_children(self, coordinates: mp) -> None:
+    def set_children(self, coordinates: mp_type) -> None:
         assert is_multipolygon(coordinates), str(coordinates)[:100]
         for coords in coordinates:
             # Filter triangles/cross-intersections
@@ -49,7 +49,7 @@ class MultiPolygon(Obj):
         return points
 
 
-def create_multipolygon(path_id: str, coordinates: mp) -> MultiPolygon:
+def create_multipolygon(path_id: str, coordinates: mp_type) -> MultiPolygon:
     multipolygon = MultiPolygon(path_id, coordinates)
     MULTIPOLYGONS[path_id] = multipolygon
     return multipolygon
