@@ -11,13 +11,12 @@ good4 - 47s, broken cities and city parts
 """
 
 import traceback
-from settings import files
 
 from base.lands import District1, District2, District3, District4
 from base.svg import Svg
 from core import Good0 as MapObj
 from services.log import r, initialize_logging
-from utils.format_geojsons import main as format_geojsons
+from utils.format_geojson import format_geojson
 from utils.add_properties import add_properties
 
 
@@ -50,10 +49,10 @@ def dictricts_with_prague() -> None:
 
 if __name__ == '__main__':
     initialize_logging()
-    # format_geojsons(folder=files / 'districts')
     for s in (District1, District2, District3, District4):
         try:
             r.info(s.fpath)
+            format_geojson(s.fpath)
             add_properties(s.fpath)
             mo = MapObj(s)
             r.info(mo.bbox)

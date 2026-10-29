@@ -5,18 +5,21 @@
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-from settings import files, encoding
+from settings import encoding
 
 
-def fix_feature(f: dict[str, Any]) -> dict[str, Any]:
-    """Move name into properties dict, creating it when missing."""
-    props = f.get('properties')
-    if not isinstance(props, dict):
-        props = {}
-    if 'name' not in props:
-        props['name'] = f.get('name', '')
+def _fix_feature(f: dict[str, Any]) -> dict[str, Any]:
+    """Move all keys except type and geometry into properties dict."""
+    props: dict[str, Any] = {}
+    raw = f.get('properties')
+    if isinstance(raw, dict):
+        props = cast(dict[str, Any], raw)
+    keep = ('type', 'geometry', 'properties')
+    for key in [k for k in f if k not in keep]:
+        props[key] = f.pop(key)
+    props.setdefault('name', '')
     f['properties'] = props
     return f
 
@@ -27,17 +30,7 @@ def add_properties(src: Path) -> int:
         data = json.load(f)
     features = data.get('features', [])
     for f in features:
-        fix_feature(f)
+        _fix_feature(f)
     with src.open('w', encoding=encoding) as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     return len(features)
-
-
-def main() -> None:
-    src = files / 'districts' / '4.geojson'
-    count = add_properties(src)
-    print(f'{count} features written to {src}')
-
-
-if __name__ == '__main__':
-    main()
