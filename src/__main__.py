@@ -12,7 +12,8 @@ good4 - 47s, broken cities and city parts
 
 import traceback
 
-from base.lands import District1, District2, District3, District4
+# from base.lands import District1, District2, District3, District4
+from base.lands import Test1, Test2, Test3, Test4
 from base.svg import Svg
 from core import Good0 as MapObj
 from services.log import r, initialize_logging
@@ -49,7 +50,7 @@ def dictricts_with_prague() -> None:
 
 if __name__ == '__main__':
     initialize_logging()
-    for s in (District1, District2, District3, District4):
+    for s in (Test1, Test2, Test3, Test4):
         try:
             r.info(s.fpath)
             format_geojson(s.fpath)
