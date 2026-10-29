@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!python3
 # -*- coding: utf-8 -*-
 
 """Remove unneeded shit from a geojson file."""

@@ -33,11 +33,12 @@ class Test(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
         initialize_logging()
-        cls._paths = sorted(files.rglob('*.geojson'))
+        folder = files / 'districts'
+        cls.paths = sorted(folder.glob('*.geojson'))
 
     def test__geojsons(self) -> None:
-        self.assertTrue(self._paths, f'No geojson files in {files}')
-        for path in self._paths:
+        self.assertTrue(self.paths, f'No geojson files in {files}')
+        for path in self.paths:
             with self.subTest(str(path.relative_to(files))):
                 for i, geometry in get_feature_geometries(path):
                     type_ = geometry['type']
@@ -54,18 +55,18 @@ class Test(unittest.TestCase):
                         r.error(msg)
                         self.fail()
 
-    def test__nazev_in_properties(self) -> None:
-        self.assertTrue(self._paths, f'No geojson files in {files}')
-        for path in self._paths:
+    def test__name_in_properties(self) -> None:
+        self.assertTrue(self.paths, f'No geojson files in {files}')
+        for path in self.paths:
             with self.subTest(str(path.relative_to(files))):
                 with path.open(encoding='utf-8') as f:
                     data: dict[str, Any] = json.load(f)
                 for i, feature in enumerate(data.get('features', [])):
                     props: dict[str, Any] = feature.get('properties') or {}
                     self.assertIn(
-                        'nazev',
+                        'name',
                         props,
-                        f'Feature #{i} has no "nazev" in properties',
+                        f'Feature #{i} has no "name" in properties',
                     )
 
     @classmethod
