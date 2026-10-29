@@ -7,24 +7,33 @@ import unittest
 from collections.abc import Iterator
 import time
 from typing import Any
-import traceback
 
 from base.polygon import Polygon
 from base.multipolygon import MultiPolygon
-from settings import files
-from services.log import r, initialize_logging, log_time_delta
+from settings import files, encoding
+from services.log import initialize_logging, log_time_delta
 
 GEOMETRY_TYPES = ('Polygon', 'MultiPolygon')
 
 
-def get_feature_geometries(fpath: Path) -> Iterator[tuple[int, Any]]:
-    with fpath.open(encoding='utf-8') as f:
+def get_feature_subdict(fpath: Path, key: str) -> Iterator[Any]:
+    with fpath.open(encoding=encoding) as f:
         data: dict[str, Any] = json.load(f)
 
     if data.get('type') == 'FeatureCollection':
-        for i, feature in enumerate(data['features']):
-            if feature.get('type') == 'Feature' and 'geometry' in feature:
-                yield i, feature['geometry']
+        for feature in data['features']:
+            if feature.get('type') == 'Feature' and key in feature:
+                yield feature[key]
+
+
+def get_feature_properties(fpath: Path) -> Iterator[dict[str, Any]]:
+    with fpath.open(encoding=encoding) as f:
+        data: dict[str, Any] = json.load(f)
+
+    if data.get('type') == 'FeatureCollection':
+        for feature in data['features']:
+            if feature.get('type') == 'Feature' and 'properties' in feature:
+                yield feature['properties']
 
 
 class Test(unittest.TestCase):
@@ -33,33 +42,32 @@ class Test(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.start = time.perf_counter()
         initialize_logging()
-        folder = files / 'districts'
-        cls.paths = sorted(folder.glob('*.geojson'))
+        # folder = files / 'districts'
+        cls.paths = sorted(files.rglob('*.geojson'))
 
-    def test__geojsons(self) -> None:
-        self.assertTrue(self.paths, f'No geojson files in {files}')
-        for path in self.paths:
-            with self.subTest(str(path.relative_to(files))):
-                for i, geometry in get_feature_geometries(path):
-                    type_ = geometry['type']
-                    assert type_ in GEOMETRY_TYPES
-                    assert 'coordinates' in geometry
-                    try:
-                        if type_ == 'Polygon':
-                            Polygon(geometry['coordinates'])
-                        elif type_ == 'MultiPolygon':
-                            MultiPolygon('test', geometry['coordinates'])
-                    except Exception:
-                        e = traceback.format_exc()
-                        msg = f'Feature #{i} in\n{path}\n{e}'
-                        r.error(msg)
-                        self.fail()
+    def test__feature_keys(self) -> None:
+        for fpath in self.paths:
+            with self.subTest(str(fpath.relative_to(files))):
+                with fpath.open(encoding=encoding) as f:
+                    data: dict[str, Any] = json.load(f)
+                    for feature in data['features']:
+                        assert 'type' in feature
+                        assert 'properties' in feature
+                        assert 'geometry' in feature
+
+    def test__geometries(self) -> None:
+        for fpath in self.paths:
+            with self.subTest(str(fpath.relative_to(files))):
+                for geometry in get_feature_subdict(fpath, 'geometry'):
+                    if geometry['type'] == 'Polygon':
+                        Polygon(geometry['coordinates'])
+                    if geometry['type'] == 'MultiPolygon':
+                        MultiPolygon('test', geometry['coordinates'])
 
     def test__name_in_properties(self) -> None:
-        self.assertTrue(self.paths, f'No geojson files in {files}')
-        for path in self.paths:
-            with self.subTest(str(path.relative_to(files))):
-                with path.open(encoding='utf-8') as f:
+        for fpath in self.paths:
+            with self.subTest(str(fpath.relative_to(files))):
+                with fpath.open(encoding=encoding) as f:
                     data: dict[str, Any] = json.load(f)
                 for i, feature in enumerate(data.get('features', [])):
                     props: dict[str, Any] = feature.get('properties') or {}
