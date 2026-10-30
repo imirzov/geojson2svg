@@ -21,7 +21,9 @@ class Filter(ABC):
 
 class RemoveNeedles(Filter):
     """Needle is 3 points where first and third have the same
-    coordinates. So 2nd and 3rd point have to be removed."""
+    coordinates. So 2nd and 3rd point have to be removed.
+    NOTE This filter should be applied only to linestrings and polygons.
+    """
 
     def apply(self) -> None:
         points_to_remove: set[Point] = set()

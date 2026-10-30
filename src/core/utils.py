@@ -155,8 +155,8 @@ def compress_coodrinates(feature) -> dict:
     # Reduce coordinates precision. Duplicated points removed.
     c = feature['geometry']['coordinates']
     if feature['geometry']['type'] == 'MultiPolygon':
-        for j, mp in enumerate(c):
-            for i, pg in enumerate(mp):
+        for j, mpg in enumerate(c):
+            for i, pg in enumerate(mpg):
                 assert is_polygon(pg)
                 pg = remove_duplicate_points(pg)
                 feature['geometry']['coordinates'][j][i] = pg

@@ -51,9 +51,9 @@ class Svg:
     def run(self, show_ids: bool = False) -> None:
         """Create paths and place them into SVG code."""
         svg_paths: list[str] = []
-        for mp in self.map_obj.get_children():
+        for mpg in self.map_obj.get_children():
             coords = ''
-            for polygon in mp.get_children():
+            for polygon in mpg.get_children():
                 coords += 'M'  # NOTE use small letter for dx,dy
                 for pt in polygon.get_children():
                     # coords += ' {:.3f},{:.3f}'.format(dx, dy) # for dx,dy
@@ -65,7 +65,7 @@ class Svg:
                                     pt.y - 10 * polygon.id_, pt.id_))
                 coords += ' Z'  # NOTE use small letter for dx,dy
             svg_paths.append('{}<path d="{}" id="{}" />\n'
-                             .format(pad, coords, mp.path_id))
+                             .format(pad, coords, mpg.path_id))
         # for pt in BORDER_UTMOST_POINTS:
         #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
         #                      'r="0.5" style="fill:black;" />\n')

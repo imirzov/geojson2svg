@@ -16,8 +16,8 @@ class Good0(MapObj):
     def run(self) -> None:
         Coords2Px(self).apply()
         Round(self).apply(precision=1)
-        for mp in self.get_children():
-            for polygon in mp.get_children():
+        for mpg in self.get_children():
+            for polygon in mpg.get_children():
                 RemoveNeedles(polygon.get_points()).apply()
         r.info(f'Point count: {len(self.get_points())}')
 
@@ -44,8 +44,8 @@ class Good1(MapObj):
         self.collapse_gaps(mergable_polygon_pairs, self.PRECISION)
         self.remove_close_points(self.PRECISION)
         Round(self).apply(precision=1)
-        for mp in self.get_children():
-            for polygon in mp.get_children():
+        for mpg in self.get_children():
+            for polygon in mpg.get_children():
                 RemoveNeedles(polygon.get_points()).apply()
         r.info(f'Point count: {len(self.get_points())}')
 

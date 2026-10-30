@@ -134,12 +134,12 @@ def cleanup_shapely_polygon(p: shapely.geometry.Polygon) \
         -> shapely.geometry.base.BaseGeometry:
     if p.is_valid:
         return p
-    mp = p.buffer(0)
-    if mp.geom_type == 'Polygon' and mp.is_valid:
+    pg = p.buffer(0)
+    if pg.geom_type == 'Polygon' and pg.is_valid:
         return p
-    assert mp.geom_type == 'MultiPolygon'
+    assert pg.geom_type == 'MultiPolygon'
     maap: dict[float, shapely.geometry.Polygon] = dict()
-    for p in mp.geoms:
+    for p in pg.geoms:
         maap[p.area] = p
     return maap[max(maap.keys())].normalize()
 """

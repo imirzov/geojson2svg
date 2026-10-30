@@ -53,9 +53,9 @@ class MultiPolygon(Obj):
 
 
 def create_multipolygon(path_id: str, coordinates: mp_type) -> MultiPolygon:
-    mp = MultiPolygon(path_id, coordinates)
-    MULTIPOLYGONS[path_id] = mp
-    return mp
+    mpg = MultiPolygon(path_id, coordinates)
+    MULTIPOLYGONS[path_id] = mpg
+    return mpg
 
 
 def find_overlapping_multipolygons(

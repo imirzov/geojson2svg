@@ -53,8 +53,6 @@ class Coords2Px(Transform):
         """Convert latitude and longitude GeoJson coords
         to Land's width (w) and height (h) in pixels.
         """
-        for mp in self.mo.get_children():
-            for pg in mp.get_children():
-                for pt in pg.get_children():
-                    pt.x = (pt.x - self.bbox.xmin) / self.bbox.dx * self.w
-                    pt.y = (self.bbox.ymax - pt.y) / self.bbox.dy * self.h
+        for pt in self.mo.get_points():
+            pt.x = (pt.x - self.bbox.xmin) / self.bbox.dx * self.w
+            pt.y = (self.bbox.ymax - pt.y) / self.bbox.dy * self.h

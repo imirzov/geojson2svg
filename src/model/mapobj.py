@@ -65,8 +65,8 @@ class MapObj(Obj):
                 coordinates = feature['geometry']['coordinates']
             else:
                 coordinates = [feature['geometry']['coordinates']]
-            mp = create_multipolygon(path_id, coordinates)
-            self.children.append(mp.path_id)
+            mpg = create_multipolygon(path_id, coordinates)
+            self.children.append(mpg.path_id)
 
     @override
     def get_children(self) -> list[MultiPolygon]:
@@ -75,14 +75,14 @@ class MapObj(Obj):
     @override
     def get_points(self) -> list[Point]:
         points: list[Point] = []
-        for mp in self.get_children():
-            points.extend(mp.get_points())
+        for mpg in self.get_children():
+            points.extend(mpg.get_points())
         return points
 
     def remove_close_points(self, precision: int) -> None:
         """Remove close points (within precision)."""
-        for mp in self.get_children():
-            for pg in mp.get_children():
+        for mpg in self.get_children():
+            for pg in mpg.get_children():
                 points = pg.get_children()
                 assert len(points)
                 prev_pt = points[0]
