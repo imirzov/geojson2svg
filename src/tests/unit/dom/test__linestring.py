@@ -1,5 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import time
 import unittest
 
+from base.log import initialize_logging, log_time_delta
 from dom.linestring import (
     LINESTRINGS,
     LineString,
@@ -10,6 +15,11 @@ from dom.point import POINTS
 
 
 class TestLineString(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.start = time.perf_counter()
+        initialize_logging()
 
     def _create_linestring(self) -> LineString:
         linestring = LineString([(15.0, 50.0), (16.0, 51.0)])
@@ -53,3 +63,7 @@ class TestLineString(unittest.TestCase):
                 for point in linestring.get_points()
             )
         )
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        log_time_delta(cls.start)
