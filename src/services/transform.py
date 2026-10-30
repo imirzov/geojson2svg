@@ -5,7 +5,7 @@
 
 from abc import ABC
 
-from dom.mapobj import MapObj
+from model.mapobj import MapObj
 
 
 class Transform(ABC):

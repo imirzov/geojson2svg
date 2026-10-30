@@ -8,7 +8,7 @@ import sys
 from typing import Self, Any, override
 
 from base.bbox import BBox
-from dom.obj import Obj
+from model.obj import Obj
 
 
 POINTS: dict[str | int, Point] = dict()  # id_: (x, y)

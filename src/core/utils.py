@@ -5,7 +5,7 @@ from math import inf
 
 from base.bbox import BBox
 from base.log import r
-from dom.point import Point, merge_points_to
+from model.point import Point, merge_points_to
 
 
 def get_bbox(points: list[Point]) -> BBox:

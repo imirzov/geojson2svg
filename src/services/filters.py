@@ -5,8 +5,8 @@
 
 from abc import ABC
 
-from dom.point import Point
-from dom.polygon import Polygon
+from model.point import Point
+from model.polygon import Polygon
 from base.log import r
 
 

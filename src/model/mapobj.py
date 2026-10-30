@@ -8,9 +8,9 @@ from typing import Self, override
 
 from base import to_en
 from base.lands import Land
-from dom.obj import Obj
-from dom.point import POINTS, Point
-from dom.multipolygon import MULTIPOLYGONS, MultiPolygon, create_multipolygon
+from model.obj import Obj
+from model.point import POINTS, Point
+from model.multipolygon import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
 
 PARENTS: dict[int, str] = dict()  # id_: name

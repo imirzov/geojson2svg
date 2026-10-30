@@ -8,12 +8,12 @@ from collections.abc import Iterator
 import time
 from typing import Any
 
-from dom.point import Point
-from dom.linestring import LineString
-from dom.polygon import Polygon
-from dom.multipoint import MultiPoint
-from dom.multilinestring import MultiLineString
-from dom.multipolygon import MultiPolygon
+from model.point import Point
+from model.linestring import LineString
+from model.polygon import Polygon
+from model.multipoint import MultiPoint
+from model.multilinestring import MultiLineString
+from model.multipolygon import MultiPolygon
 from settings import files, encoding
 from base.log import initialize_logging, log_time_delta
 

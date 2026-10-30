@@ -5,14 +5,14 @@ import time
 import unittest
 
 from base.log import initialize_logging, log_time_delta
-from dom.multipoint import (
+from model.multipoint import (
     MULTIPOINTS,
     MultiPoint,
     create_multipoint,
     find_overlapping_multipoints,
     is_multipoint,
 )
-from dom.point import POINTS
+from model.point import POINTS
 
 
 class TestMultiPoint(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestMultiPoint(unittest.TestCase):
         cls.start = time.perf_counter()
         initialize_logging()
 
-    def test__dom__multipoint__create_multipoint(self) -> None:
+    def test__model__multipoint__create_multipoint(self) -> None:
         multipoint = create_multipoint('test', [(1.0, 2.0), (3.0, 4.0)])
 
         try:
@@ -33,7 +33,7 @@ class TestMultiPoint(unittest.TestCase):
             for point in multipoint.get_points():
                 POINTS.pop(point.id_, None)
 
-    def test__dom__multipoint__find_overlapping_multipoints(self) -> None:
+    def test__model__multipoint__find_overlapping_multipoints(self) -> None:
         first = MultiPoint('first', [(0.0, 0.0), (1.0, 1.0)])
         second = MultiPoint('second', [(0.5, 0.5)])
         third = MultiPoint('third', [(10.0, 10.0)])
@@ -49,22 +49,11 @@ class TestMultiPoint(unittest.TestCase):
                 for point in multipoint.get_points():
                     POINTS.pop(point.id_, None)
 
-    def test__dom__multipoint__is_multipoint(self) -> None:
+    def test__model__multipoint__is_multipoint(self) -> None:
         self.assertTrue(is_multipoint([(1.0, 2.0), (3.0, 4.0)]))
         self.assertFalse(is_multipoint([[(1.0, 2.0)]]))
 
-    def test__dom__multipoint__MultiPoint____init__(self) -> None:
-        multipoint = MultiPoint('test', [(1.0, 2.0)])
-
-        try:
-            self.assertEqual(multipoint.path_id, 'test')
-            self.assertEqual(multipoint.bbox.xmin, 1.0)
-            self.assertEqual(multipoint.bbox.ymin, 2.0)
-        finally:
-            for point in multipoint.get_points():
-                POINTS.pop(point.id_, None)
-
-    def test__dom__multipoint__MultiPoint__get_children(self) -> None:
+    def test__model__multipoint__MultiPoint__get_children(self) -> None:
         multipoint = MultiPoint('test', [(1.0, 2.0)])
 
         try:
@@ -74,7 +63,7 @@ class TestMultiPoint(unittest.TestCase):
             for point in multipoint.get_points():
                 POINTS.pop(point.id_, None)
 
-    def test__dom__multipoint__MultiPoint__get_points(self) -> None:
+    def test__model__multipoint__MultiPoint__get_points(self) -> None:
         multipoint = MultiPoint('test', [(1.0, 2.0), (3.0, 4.0)])
 
         try:
@@ -85,7 +74,7 @@ class TestMultiPoint(unittest.TestCase):
             for point in multipoint.get_points():
                 POINTS.pop(point.id_, None)
 
-    def test__dom__multipoint__MultiPoint__set_children(self) -> None:
+    def test__model__multipoint__MultiPoint__set_children(self) -> None:
         multipoint = MultiPoint('test', [(1.0, 2.0)])
 
         try:

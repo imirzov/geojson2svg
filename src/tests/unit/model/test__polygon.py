@@ -5,7 +5,7 @@ import time
 import unittest
 
 from base import get_nested_list_depth
-from dom.polygon import is_polygon
+from model.polygon import is_polygon
 from base.log import initialize_logging, log_time_delta
 
 
@@ -17,14 +17,14 @@ class TestPolygon(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__create_polygon(self) -> None:
+    def test__model__polygon__create_polygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__find_overlapping_polygons(self) -> None:
+    def test__model__polygon__find_overlapping_polygons(self) -> None:
         pass
 
-    def test__dom__polygon__is_polygon(self) -> None:
+    def test__model__polygon__is_polygon(self) -> None:
         with self.subTest('no'):
             coordinates = [
                 [
@@ -46,19 +46,19 @@ class TestPolygon(unittest.TestCase):
             self.assertTrue(b)
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__Polygon__get_children(self) -> None:
+    def test__model__polygon__Polygon__get_children(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__Polygon__get_points(self) -> None:
+    def test__model__polygon__Polygon__get_points(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__Polygon__remove_point(self) -> None:
+    def test__model__polygon__Polygon__remove_point(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__polygon__Polygon__set_children(self) -> None:
+    def test__model__polygon__Polygon__set_children(self) -> None:
         pass
 
     @classmethod

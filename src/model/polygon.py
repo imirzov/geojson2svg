@@ -10,9 +10,9 @@ from __future__ import annotations
 from typing import override, Any
 
 from base import get_nested_list_depth
-from dom.obj import Obj
-from dom.point import POINTS, Point, create_point
-from dom.linestring import ls_type
+from model.obj import Obj
+from model.point import POINTS, Point, create_point
+from model.linestring import ls_type
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon

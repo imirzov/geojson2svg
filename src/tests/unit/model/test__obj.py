@@ -15,11 +15,11 @@ class TestObj(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__dom__obj__Obj__is_overlapping_with(self) -> None:
+    def test__model__obj__Obj__is_overlapping_with(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__obj__Obj__set_bbox(self) -> None:
+    def test__model__obj__Obj__set_bbox(self) -> None:
         pass
 
     @classmethod

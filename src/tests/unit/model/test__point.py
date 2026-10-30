@@ -4,7 +4,7 @@
 import time
 import unittest
 
-from dom.point import POINTS, Point, create_point
+from model.point import POINTS, Point, create_point
 from base.log import initialize_logging, log_time_delta
 
 
@@ -19,7 +19,7 @@ class TestPoint(unittest.TestCase):
     def tearDownClass(cls) -> None:
         log_time_delta(cls.start)
 
-    def test__dom__point__create_point(self) -> None:
+    def test__model__point__create_point(self) -> None:
         points = [
             create_point((float(i), float(i)))
             for i in range(3)
@@ -37,7 +37,7 @@ class TestPoint(unittest.TestCase):
                 POINTS.pop(point.id_, None)
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__merge_points_to(self) -> None:
+    def test__model__point__merge_points_to(self) -> None:
         ...
 
 
@@ -49,26 +49,26 @@ class TestPoint__Point(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__Point____str__(self) -> None:
+    def test__model__point__Point____str__(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__Point__close_to(self) -> None:
+    def test__model__point__Point__close_to(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__Point__get_children(self) -> None:
+    def test__model__point__Point__get_children(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__Point__get_points(self) -> None:
+    def test__model__point__Point__get_points(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__dom__point__Point__round(self) -> None:
+    def test__model__point__Point__round(self) -> None:
         ...
 
-    def test__dom__point__Point____hash__(self) -> None:
+    def test__model__point__Point____hash__(self) -> None:
         a = Point((1, 2))
         b = Point((1, 2))
         c = Point((1, 3))
@@ -76,7 +76,7 @@ class TestPoint__Point(unittest.TestCase):
         assert len({a, b, c}) == 2
 
     @unittest.skip('TODO: implement test')
-    def test__dom__point__Point____eq__(self) -> None:
+    def test__model__point__Point____eq__(self) -> None:
         # f = ...
         # try:
         #     f(...)

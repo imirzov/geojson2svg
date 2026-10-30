@@ -5,14 +5,14 @@ import time
 import unittest
 
 from base.log import initialize_logging, log_time_delta
-from dom.linestring import LINESTRINGS
-from dom.multilinestring import (
+from model.linestring import LINESTRINGS
+from model.multilinestring import (
     MULTILINESTRINGS,
     MultiLineString,
     create_multilinestring,
     is_multilinestring,
 )
-from dom.point import POINTS
+from model.point import POINTS
 
 
 class TestMultiLineString(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestMultiLineString(unittest.TestCase):
                 POINTS.pop(point.id_, None)
             LINESTRINGS.pop(linestring.id_, None)
 
-    def test__dom__multilinestring__is_multilinestring(self) -> None:
+    def test__model__multilinestring__is_multilinestring(self) -> None:
         self.assertTrue(is_multilinestring([
             [(15.0, 50.0), (16.0, 51.0)],
         ]))
@@ -48,17 +48,31 @@ class TestMultiLineString(unittest.TestCase):
             [[(15.0, 50.0), (16.0, 51.0)]],
         ]))
 
-    def test__dom__multilinestring__MultiLineString__get_children(
+    @unittest.skip('TODO: implement test')
+    def test__model__multilinestring__MultiLineString__set_children(self) \
+            -> None:
+        # f = ...
+        # try:
+        #     f(...)
+        # except Exception as e:
+        #     msg = f'{f.__name__} raised ' \
+        #           f'{e.__class__.__name__}: {e}\n' \
+        #           + traceback.format_exc()
+        #     r.error(msg)
+        #     self.fail(msg)
+        pass
+
+    def test__model__multilinestring__MultiLineString__get_children(
             self) -> None:
         multilinestring = self._create_multilinestring()
         self.assertEqual(len(multilinestring.get_children()), 2)
 
-    def test__dom__multilinestring__MultiLineString__get_points(
+    def test__model__multilinestring__MultiLineString__get_points(
             self) -> None:
         multilinestring = self._create_multilinestring()
         self.assertEqual(len(multilinestring.get_points()), 4)
 
-    def test__dom__multilinestring__create_multilinestring(self) -> None:
+    def test__model__multilinestring__create_multilinestring(self) -> None:
         multilinestring = create_multilinestring([
             [(15.0, 50.0), (16.0, 51.0)],
         ])

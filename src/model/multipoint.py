@@ -7,8 +7,8 @@ from __future__ import annotations
 from typing import Any, override
 
 from base import get_nested_list_depth
-from dom.obj import Obj
-from dom.point import POINTS, Point, create_point, pt_type
+from model.obj import Obj
+from model.point import POINTS, Point, create_point, pt_type
 
 
 MULTIPOINTS: dict[str, MultiPoint] = dict()  # path_id: MultiPoint

@@ -7,7 +7,7 @@ import unittest
 from base.log import initialize_logging, log_time_delta
 
 
-class TestMapObj(unittest.TestCase):
+class TestMultiPolygon(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -15,27 +15,27 @@ class TestMapObj(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj____add__(self) -> None:
+    def test__model__multipolygon__create_multipolygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj____str__(self) -> None:
+    def test__model__multipolygon__find_overlapping_multipolygons(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj__get_children(self) -> None:
+    def test__model__multipolygon__is_multipolygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj__get_points(self) -> None:
+    def test__model__multipolygon__MultiPolygon__get_children(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj__read_children(self) -> None:
+    def test__model__multipolygon__MultiPolygon__get_points(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__dom__mapobj__MapObj__remove_close_points(self) -> None:
+    def test__model__multipolygon__MultiPolygon__set_children(self) -> None:
         pass
 
     @classmethod
