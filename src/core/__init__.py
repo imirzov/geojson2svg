@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from base.log import r
 from core.utils import recursive_quad_merge, collapse_gap_1, collapse_gap_2
 from dom.point import Point, merge_points_to
 from dom.polygon import Polygon, find_overlapping_polygons
 from dom.multipolygon import find_overlapping_multipolygons
 from dom.mapobj import MapObj
 from services.filters import RemoveSamePoints, RemoveNeedles
-from base.log import r
 from services.transform import Round, Coords2Px
 
 

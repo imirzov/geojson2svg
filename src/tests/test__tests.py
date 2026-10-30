@@ -13,7 +13,6 @@ import types
 from typing import Any, Callable
 import unittest
 
-import core.utils
 from base.log import r, initialize_logging, log_time_delta
 import settings
 
@@ -27,8 +26,7 @@ SKIP = ['abstractmethod', 'override', 'cast', 'Counter',
 def get_modules(directory: Path, skip: list[Path] = []) \
         -> list[types.ModuleType]:
     modules: list[types.ModuleType] = []
-    plist: list[str | Path] = [directory, '**', '*.py']
-    for f in core.utils.glob_files(plist, recursive=True):
+    for f in directory.rglob('*.py'):
         if any(d in f.parents for d in skip):
             continue
         # import_module('__main__') returns the running test runner
