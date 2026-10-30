@@ -8,7 +8,11 @@ from collections.abc import Iterator
 import time
 from typing import Any
 
+from dom.point import Point
+from dom.linestring import LineString
 from dom.polygon import Polygon
+from dom.multipoint import MultiPoint
+from dom.multilinestring import MultiLineString
 from dom.multipolygon import MultiPolygon
 from settings import files, encoding
 from base.log import initialize_logging, log_time_delta
@@ -76,6 +80,24 @@ class Test(unittest.TestCase):
                         props,
                         f'Feature #{i} has no "name" in properties',
                     )
+
+    def test__geojson_types(self) -> None:
+        fpaths = Path(files / 'tests').glob('*.geojson')
+        for fpath in fpaths:
+            with self.subTest(str(fpath.relative_to(files))):
+                for geometry in get_feature_subdict(fpath, 'geometry'):
+                    if geometry['type'] == 'Point':
+                        Point(geometry['coordinates'])
+                    if geometry['type'] == 'LineString':
+                        LineString(geometry['coordinates'])
+                    if geometry['type'] == 'Polygon':
+                        Polygon(geometry['coordinates'])
+                    if geometry['type'] == 'MultiPoint':
+                        MultiPoint('test', geometry['coordinates'])
+                    if geometry['type'] == 'MultiLineString':
+                        MultiLineString(geometry['coordinates'])
+                    if geometry['type'] == 'MultiPolygon':
+                        MultiPolygon('test', geometry['coordinates'])
 
     @classmethod
     def tearDownClass(cls) -> None:
