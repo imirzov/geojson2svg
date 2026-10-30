@@ -6,13 +6,13 @@
 import sys
 
 from base.lands import Test1
-from base.multipolygon import find_overlapping_multipolygons
-from base.point import POINTS, Point
-from base.polygon import Polygon, find_overlapping_polygons
-from base.svg import Svg
+from dom.multipolygon import find_overlapping_multipolygons
+from dom.point import POINTS, Point
+from dom.polygon import Polygon, find_overlapping_polygons
+from core.svg import Svg
 from core import Good4 as MapObj
 from services.transform import Round
-from services.log import r
+from base.log import r
 
 
 # def test():

@@ -4,12 +4,11 @@
 """Represents a single geographic position (longitude, latitude)."""
 
 from __future__ import annotations
-
 import sys
 from typing import Self, Any, override
 
 from base.bbox import BBox
-from base.obj import Obj
+from dom.obj import Obj
 
 
 POINTS: dict[str | int, Point] = dict()  # id_: (x, y)

@@ -5,8 +5,8 @@
 import time
 import unittest
 
-from base.point import POINTS, Point, create_point
-from services.log import initialize_logging, log_time_delta
+from dom.point import POINTS, Point, create_point
+from base.log import initialize_logging, log_time_delta
 
 
 class TestPoint(unittest.TestCase):

@@ -14,7 +14,7 @@ from typing import Any, Callable
 import unittest
 
 import core.utils
-from services.log import r, initialize_logging, log_time_delta
+from base.log import r, initialize_logging, log_time_delta
 import settings
 
 t = ' ' * 4

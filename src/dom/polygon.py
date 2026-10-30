@@ -7,12 +7,11 @@ must be identical to close the shape.
 """
 
 from __future__ import annotations
-
 from typing import override
 
 from base import get_nested_list_depth
-from base.obj import Obj
-from base.point import POINTS, Point, pt_type, create_point
+from dom.obj import Obj
+from dom.point import POINTS, Point, pt_type, create_point
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon

@@ -45,7 +45,7 @@ class District1(Land):
 
 
 class District2(Land):
-    fpath = districts / '2.json'
+    fpath = districts / '2.geojson'
     parent = 'vusc'
 
 

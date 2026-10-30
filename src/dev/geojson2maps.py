@@ -7,10 +7,10 @@ import json
 from typing import Any, Union
 
 import settings
-from services.log import r
-from base.lands import Region, District, City, CityPart
+from base.log import r
+from base.lands import Region1, District1, City1, CityParts1
 
-GeoItem = Union[type[Region], type[District], type[City], type[CityPart]]
+GeoItem = Union[type[Region1], type[District1], type[City1], type[CityParts1]]
 
 
 class Feature:
@@ -28,8 +28,7 @@ class Feature:
 
 def extract_features(klass: GeoItem) -> list[Feature]:
     features: list[Feature] = []
-    fpath = settings.files / klass.output_name
-    with open(fpath, 'r', encoding=settings.encoding) as f:
+    with open(klass.fpath, 'r', encoding=settings.encoding) as f:
         geojson = json.load(f)
     for feature in geojson['features']:
         p = feature['properties']
@@ -52,10 +51,10 @@ def get_parent_by_id(features: list[Feature], parent_id: int) \
 
 def main() -> None:
     config_geo_json: dict[str, Any] = dict()
-    region_features = extract_features(Region)
-    district_features = extract_features(District)
-    city_features = extract_features(City)
-    city_part_features = extract_features(CityPart)
+    region_features = extract_features(Region1)
+    district_features = extract_features(District1)
+    city_features = extract_features(City1)
+    city_part_features = extract_features(CityParts1)
     for f1 in region_features:
         config_geo_json[f1.name] = dict()
 

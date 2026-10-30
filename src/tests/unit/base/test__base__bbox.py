@@ -2,7 +2,7 @@ import time
 import unittest
 
 from base.bbox import BBox
-from services.log import initialize_logging, log_time_delta
+from base.log import initialize_logging, log_time_delta
 
 
 class TestBBox(unittest.TestCase):

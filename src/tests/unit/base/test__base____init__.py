@@ -5,7 +5,7 @@ import time
 import unittest
 
 from base import get_nested_list_depth
-from services.log import initialize_logging, log_time_delta
+from base.log import initialize_logging, log_time_delta
 
 
 class TestBase(unittest.TestCase):

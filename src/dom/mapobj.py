@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-
 import json
 import os
 from typing import Self, override
 
+from base import to_en
 from base.lands import Land
-from base.obj import Obj
-from base.point import POINTS, Point
-from base.multipolygon \
-    import MULTIPOLYGONS, MultiPolygon, create_multipolygon
+from dom.obj import Obj
+from dom.point import POINTS, Point
+from dom.multipolygon import MULTIPOLYGONS, MultiPolygon, create_multipolygon
 import settings
 
 PARENTS: dict[int, str] = dict()  # id_: name
@@ -60,7 +59,7 @@ class MapObj(Obj):
             else:
                 if self.klass.id in p:
                     PARENTS[p[self.klass.id]] = p[self.klass.name]
-            path_id = settings.to_en(path_id)
+            path_id = to_en(path_id)
 
             if feature['geometry']['type'] == 'MultiPolygon':
                 coordinates = feature['geometry']['coordinates']

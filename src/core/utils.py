@@ -6,8 +6,8 @@ import os
 from pathlib import Path
 
 from base.bbox import BBox
-from base.point import Point, merge_points_to
-from services.log import r
+from dom.point import Point, merge_points_to
+from base.log import r
 
 
 def get_bbox(points: list[Point]) -> BBox:

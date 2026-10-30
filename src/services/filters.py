@@ -5,9 +5,9 @@
 
 from abc import ABC
 
-from base.point import Point
-from base.polygon import Polygon
-from services.log import r
+from dom.point import Point
+from dom.polygon import Polygon
+from base.log import r
 
 
 class Filter(ABC):

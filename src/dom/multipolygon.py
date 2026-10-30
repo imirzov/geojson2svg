@@ -7,9 +7,9 @@ from __future__ import annotations
 from typing import Any, override
 
 from base import get_nested_list_depth
-from base.obj import Obj
-from base.polygon import POLYGONS, pg_type, Polygon, create_polygon
-from base.point import Point
+from dom.obj import Obj
+from dom.point import Point
+from dom.polygon import POLYGONS, pg_type, Polygon, create_polygon
 
 
 MULTIPOLYGONS: dict[str | int, MultiPolygon] = dict()  # id_: MultiPolygon

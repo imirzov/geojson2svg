@@ -8,10 +8,10 @@ from collections.abc import Iterator
 import time
 from typing import Any
 
-from base.polygon import Polygon
-from base.multipolygon import MultiPolygon
+from dom.polygon import Polygon
+from dom.multipolygon import MultiPolygon
 from settings import files, encoding
-from services.log import initialize_logging, log_time_delta
+from base.log import initialize_logging, log_time_delta
 
 GEOMETRY_TYPES = ('Polygon', 'MultiPolygon')
 

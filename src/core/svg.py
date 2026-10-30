@@ -4,7 +4,7 @@
 from string import Template
 import settings
 
-from base.mapobj import MapObj
+from dom.mapobj import MapObj
 
 pad = ' ' * 4
 

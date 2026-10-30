@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
 import os
 import sys
 import time
@@ -11,6 +12,13 @@ from pathlib import Path
 import settings
 
 r = logging.getLogger('report')
+
+
+def time_now() -> str:
+    """Last update time for HTML pages.
+    2023-12-17 17:34:42
+    """
+    return str(datetime.datetime.now())[:19]
 
 
 def initialize_logging(erase: bool = True, test: bool = False,
@@ -75,7 +83,7 @@ def initialize_logging(erase: bool = True, test: bool = False,
         r.handlers = [fh, sh]
 
     s = 'START' if erase else 'UPDATE'
-    t = settings.time_now()
+    t = time_now()
     r.info(f'{s} {t}\n\n\n')
     return log_file
 

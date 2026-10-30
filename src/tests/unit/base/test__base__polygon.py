@@ -5,8 +5,8 @@ import time
 import unittest
 
 from base import get_nested_list_depth
-from base.polygon import is_polygon
-from services.log import initialize_logging, log_time_delta
+from dom.polygon import is_polygon
+from base.log import initialize_logging, log_time_delta
 
 
 class TestPolygon(unittest.TestCase):

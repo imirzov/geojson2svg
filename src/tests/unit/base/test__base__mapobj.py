@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from services.log import initialize_logging, log_time_delta
+from base.log import initialize_logging, log_time_delta
 
 
 class TestMapObj(unittest.TestCase):
