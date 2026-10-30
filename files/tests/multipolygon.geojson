@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "MultiPolygon example"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [-2, -1],
+              [-1, -1],
+              [-1, 0],
+              [-2, 0],
+              [-2, -1]
+            ]
+          ],
+          [
+            [
+              [1, 0],
+              [2, 0],
+              [2, 1],
+              [1, 1],
+              [1, 0]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
