@@ -7,16 +7,17 @@ must be identical to close the shape.
 """
 
 from __future__ import annotations
-from typing import override
+from typing import override, Any
 
 from base import get_nested_list_depth
 from dom.obj import Obj
-from dom.point import POINTS, Point, pt_type, create_point
+from dom.point import POINTS, Point, create_point
+from dom.linestring import ls_type
 
 
 POLYGONS: dict[str | int, Polygon] = dict()  # id_: Polygon
 _next_id = 0
-pg_type = list[list[pt_type]]
+pg_type = list[ls_type]
 
 
 class Polygon(Obj):
@@ -75,7 +76,7 @@ def find_overlapping_polygons(polygons: list[Polygon]) \
     return overlapping_pairs
 
 
-def is_polygon(coordinates: pg_type) -> bool:
+def is_polygon(coordinates: list[Any]) -> bool:
     return (
         len(coordinates) == 1
         and get_nested_list_depth(coordinates) == 3
