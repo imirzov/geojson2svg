@@ -4,7 +4,7 @@ import unittest
 from base.log import initialize_logging, log_time_delta
 
 
-class TestGeojson2Maps(unittest.TestCase):
+class TestObj(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -12,15 +12,11 @@ class TestGeojson2Maps(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__geojson2maps__extract_features(self) -> None:
+    def test__dom__obj__Obj__is_overlapping_with(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__geojson2maps__get_parent_by_id(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
-    def test__geojson2maps__Feature____str__(self) -> None:
+    def test__dom__obj__Obj__set_bbox(self) -> None:
         pass
 
     @classmethod

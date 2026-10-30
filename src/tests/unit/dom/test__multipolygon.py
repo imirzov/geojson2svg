@@ -12,27 +12,27 @@ class TestMultiPolygon(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__create_multipolygon(self) -> None:
+    def test__dom__multipolygon__create_multipolygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__find_overlapping_multipolygons(self) -> None:
+    def test__dom__multipolygon__find_overlapping_multipolygons(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__is_multipolygon(self) -> None:
+    def test__dom__multipolygon__is_multipolygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__MultiPolygon__get_children(self) -> None:
+    def test__dom__multipolygon__MultiPolygon__get_children(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__MultiPolygon__get_points(self) -> None:
+    def test__dom__multipolygon__MultiPolygon__get_points(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__multipolygon__MultiPolygon__set_children(self) -> None:
+    def test__dom__multipolygon__MultiPolygon__set_children(self) -> None:
         pass
 
     @classmethod

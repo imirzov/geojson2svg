@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""A tool to find missing and redundant unittests."""
+"""A tool to find missing, redundant, and misplaced unittests."""
 
 import enum
 import importlib
@@ -18,9 +18,9 @@ import settings
 
 t = ' ' * 4
 SEP = '__'
-SKIP = ['abstractmethod', 'override', 'cast', 'Counter',
-        'dataclass', 'field', 'Any', 'main', 'Path',
-        '__init__', '__eq__', '__repr__', '_plot_lines']
+SKIP = ['abstractmethod', 'override', 'cast',
+        'dataclass', 'Any', 'main',
+        '__init__']
 
 
 def get_modules(directory: Path, skip: list[Path] = []) \
@@ -29,7 +29,7 @@ def get_modules(directory: Path, skip: list[Path] = []) \
     for f in directory.rglob('*.py'):
         if any(d in f.parents for d in skip):
             continue
-        # import_module('__main__') returns the running test runner
+        # NOTE import_module('__main__') returns the running test runner
         if f.name == '__main__.py':
             continue
         f = f.relative_to(settings.src)
@@ -92,30 +92,37 @@ def get_methods(my_class: type) -> list[Callable[..., Any]]:
     return methods
 
 
-def get_existing_unittests() -> list[str]:
-    test_names: list[str] = []
+def get_existing_unittests() -> dict[str, list[Path]]:
+    test_names: dict[str, list[Path]] = {}
     dpath = settings.tests / 'unit'
     for m in get_modules(directory=dpath):
+        test_path = Path(m.__file__).resolve()
         for _, c in inspect.getmembers(m, inspect.isclass):
             for method_name, _ in inspect.getmembers(c, inspect.isfunction):
                 if method_name.startswith('test_'):
-                    test_names.append(method_name)
+                    test_names.setdefault(method_name, []).append(test_path)
     return test_names
 
 
-def get_needed_tests() -> list[str]:
-    test_names: list[str] = []
+def get_test_path(my_module: types.ModuleType) -> Path:
+    source_path = Path(my_module.__file__).relative_to(settings.src)
+    test_name = f'test__{source_path.stem}.py'
+    return settings.tests / 'unit' / source_path.parent / test_name
+
+
+def get_needed_tests() -> dict[str, Path]:
+    test_names: dict[str, Path] = {}
     for m in get_src_modules():
         mpath = m.__name__.replace('.', SEP)
         for fname in get_function_names(m):
             tname = f'test{SEP}{mpath}{SEP}{fname}'
-            test_names.append(tname)
+            test_names[tname] = get_test_path(m)
         for class_name, c in get_classes(m).items():
             for method in get_methods(c):
                 method_name = method.__name__
                 tname = f'test{SEP}{mpath}{SEP}{class_name}' \
                         f'{SEP}{method_name}'
-                test_names.append(tname)
+                test_names[tname] = get_test_path(m)
     return test_names
 
 
@@ -169,6 +176,20 @@ class Test(unittest.TestCase):
                 if not bool_:
                     r.error(msg)
                 self.assertTrue(bool_, msg)
+
+    def test_test_location(self) -> None:
+        needed_test_paths = get_needed_tests()
+        for test_name, paths in get_existing_unittests().items():
+            with self.subTest(test_name):
+                expected_path = needed_test_paths.get(test_name)
+                if expected_path is None:
+                    continue
+                for test_path in paths:
+                    bool_ = test_path == expected_path.resolve()
+                    msg = f'{test_name} must be in {expected_path}'
+                    if not bool_:
+                        r.error(msg)
+                    self.assertTrue(bool_, msg)
 
     @classmethod
     def tearDownClass(cls) -> None:

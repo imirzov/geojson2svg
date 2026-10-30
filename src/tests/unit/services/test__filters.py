@@ -12,6 +12,10 @@ class TestServicesFilters(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
+    def test__services__filters__RemoveNeedles__apply(self) -> None:
+        pass
+
+    @unittest.skip('TODO: implement test')
     def test__services__filters__RemoveSamePoints__apply(self) -> None:
         # f = ...
         # try:
@@ -22,23 +26,6 @@ class TestServicesFilters(unittest.TestCase):
         #           + traceback.format_exc()
         #     r.error(msg)
         #     self.fail(msg)
-        pass
-
-    @unittest.skip('TODO: implement test')
-    def test__services__filters__Round__apply(self) -> None:
-        # f = ...
-        # try:
-        #     f(...)
-        # except Exception as e:
-        #     msg = f'{f.__name__} raised ' \
-        #           f'{e.__class__.__name__}: {e}\n' \
-        #           + traceback.format_exc()
-        #     r.error(msg)
-        #     self.fail(msg)
-        pass
-
-    @unittest.skip('TODO: implement test')
-    def test__services__filters__Smooth__apply(self) -> None:
         pass
 
     @classmethod

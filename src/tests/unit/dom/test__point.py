@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
 import time
 import unittest
 
@@ -16,7 +12,11 @@ class TestPoint(unittest.TestCase):
         cls.start = time.perf_counter()
         initialize_logging()
 
-    def test__base__point__create_point(self) -> None:
+    @classmethod
+    def tearDownClass(cls) -> None:
+        log_time_delta(cls.start)
+
+    def test__dom__point__create_point(self) -> None:
         points = [
             create_point((float(i), float(i)))
             for i in range(3)
@@ -34,12 +34,8 @@ class TestPoint(unittest.TestCase):
                 POINTS.pop(point.id_, None)
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__merge_points_to(self) -> None:
+    def test__dom__point__merge_points_to(self) -> None:
         ...
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        log_time_delta(cls.start)
 
 
 class TestPoint__Point(unittest.TestCase):
@@ -50,31 +46,44 @@ class TestPoint__Point(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__Point____str__(self) -> None:
+    def test__dom__point__Point____str__(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__Point__close_to(self) -> None:
+    def test__dom__point__Point__close_to(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__Point__get_children(self) -> None:
+    def test__dom__point__Point__get_children(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__Point__get_points(self) -> None:
+    def test__dom__point__Point__get_points(self) -> None:
         ...
 
     @unittest.skip("TODO: implement test")
-    def test__base__point__Point__round(self) -> None:
+    def test__dom__point__Point__round(self) -> None:
         ...
 
-    def test__base__point__Point____hash__(self) -> None:
+    def test__dom__point__Point____hash__(self) -> None:
         a = Point((1, 2))
         b = Point((1, 2))
         c = Point((1, 3))
         assert a == b and hash(a) == hash(b)
         assert len({a, b, c}) == 2
+
+    @unittest.skip('TODO: implement test')
+    def test__dom__point__Point____eq__(self) -> None:
+        # f = ...
+        # try:
+        #     f(...)
+        # except Exception as e:
+        #     msg = f'{f.__name__} raised ' \
+        #           f'{e.__class__.__name__}: {e}\n' \
+        #           + traceback.format_exc()
+        #     r.error(msg)
+        #     self.fail(msg)
+        pass
 
     @classmethod
     def tearDownClass(cls) -> None:

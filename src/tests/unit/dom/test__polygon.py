@@ -1,6 +1,3 @@
-#!python3
-# -*- coding: utf-8 -*-
-
 import time
 import unittest
 
@@ -17,14 +14,14 @@ class TestPolygon(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__create_polygon(self) -> None:
+    def test__dom__polygon__create_polygon(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__find_overlapping_polygons(self) -> None:
+    def test__dom__polygon__find_overlapping_polygons(self) -> None:
         pass
 
-    def test__base__polygon__is_polygon(self) -> None:
+    def test__dom__polygon__is_polygon(self) -> None:
         with self.subTest('no'):
             coordinates = [
                 [
@@ -46,23 +43,19 @@ class TestPolygon(unittest.TestCase):
             self.assertTrue(b)
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__Polygon__convert_coords_to_px(self) -> None:
+    def test__dom__polygon__Polygon__get_children(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__Polygon__get_children(self) -> None:
+    def test__dom__polygon__Polygon__get_points(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__Polygon__get_points(self) -> None:
+    def test__dom__polygon__Polygon__remove_point(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__polygon__Polygon__remove_point(self) -> None:
-        pass
-
-    @unittest.skip('TODO: implement test')
-    def test__base__polygon__Polygon__set_children(self) -> None:
+    def test__dom__polygon__Polygon__set_children(self) -> None:
         pass
 
     @classmethod

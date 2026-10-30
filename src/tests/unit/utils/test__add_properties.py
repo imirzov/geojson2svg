@@ -4,7 +4,7 @@ import unittest
 from base.log import initialize_logging, log_time_delta
 
 
-class TestObj(unittest.TestCase):
+class TestUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -12,11 +12,11 @@ class TestObj(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__base__obj__Obj__is_overlapping_with(self) -> None:
+    def test__utils__add_properties___fix_feature(self) -> None:
         pass
 
     @unittest.skip('TODO: implement test')
-    def test__base__obj__Obj__set_bbox(self) -> None:
+    def test__utils__add_properties__add_properties(self) -> None:
         pass
 
     @classmethod

@@ -4,7 +4,7 @@ import unittest
 from base.log import initialize_logging, log_time_delta
 
 
-class TestServicesCleanup(unittest.TestCase):
+class TestServicesTransform(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -12,7 +12,7 @@ class TestServicesCleanup(unittest.TestCase):
         initialize_logging()
 
     @unittest.skip('TODO: implement test')
-    def test__services__cleanup__recursively_remove_keys(self) -> None:
+    def test__services__transform__Round__apply(self) -> None:
         # f = ...
         # try:
         #     f(...)
@@ -22,6 +22,14 @@ class TestServicesCleanup(unittest.TestCase):
         #           + traceback.format_exc()
         #     r.error(msg)
         #     self.fail(msg)
+        pass
+
+    @unittest.skip('TODO: implement test')
+    def test__services__transform__Smooth__apply(self) -> None:
+        pass
+
+    @unittest.skip('TODO: implement test')
+    def test__services__transform__Coords2Px__apply(self) -> None:
         pass
 
     @classmethod
