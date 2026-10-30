@@ -18,9 +18,7 @@ import settings
 
 t = ' ' * 4
 SEP = '__'
-SKIP = ['abstractmethod', 'override', 'cast',
-        'dataclass', 'Any', 'main',
-        '__init__']
+SKIP = ['main', '__init__']
 
 
 def get_modules(directory: Path, skip: list[Path] = []) \
@@ -96,15 +94,19 @@ def get_existing_unittests() -> dict[str, list[Path]]:
     test_names: dict[str, list[Path]] = {}
     dpath = settings.tests / 'unit'
     for m in get_modules(directory=dpath):
+        if m.__file__ is None:
+            continue
         test_path = Path(m.__file__).resolve()
         for _, c in inspect.getmembers(m, inspect.isclass):
             for method_name, _ in inspect.getmembers(c, inspect.isfunction):
-                if method_name.startswith('test_'):
+                if method_name.startswith('test' + SEP):
                     test_names.setdefault(method_name, []).append(test_path)
     return test_names
 
 
 def get_test_path(my_module: types.ModuleType) -> Path:
+    if my_module.__file__ is None:
+        raise ValueError(f'Module {my_module.__name__} has no file')
     source_path = Path(my_module.__file__).relative_to(settings.src)
     test_name = f'test__{source_path.stem}.py'
     return settings.tests / 'unit' / source_path.parent / test_name
