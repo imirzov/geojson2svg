@@ -132,6 +132,9 @@ class PrahaUzemi(Prague):
     name = 'NAZ_KU_P'
 
 
+# TESTS #####################################################################
+
+
 class Test1(Land):
     fpath = tests / '1.geojson'
     w = 1000
@@ -154,3 +157,33 @@ class Test4(Land):
     fpath = tests / '4.geojson'
     w = 1000
     h = 1000
+
+
+class Point(Land):
+    fpath = tests / 'point.geojson'
+
+
+class Linestring(Land):
+    fpath = tests / 'linestring.geojson'
+
+
+class Polygon(Land):
+    fpath = tests / 'polygon.geojson'
+    w = 80
+    h = 80
+
+
+class Multipoint(Land):
+    fpath = tests / 'multipoint.geojson'
+
+
+class Multilinestring(Land):
+    fpath = tests / 'multilinestring.geojson'
+    w = 6
+    h = 6
+
+
+class Multipolygon(Land):
+    fpath = tests / 'multipolygon.geojson'
+    w = 22
+    h = 22

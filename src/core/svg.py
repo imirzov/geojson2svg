@@ -14,16 +14,12 @@ class Svg:
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
         '<svg xmlns="http://www.w3.org/2000/svg" '
         'xmlns:xlink="http://www.w3.org/1999/xlink" '
-        'viewBox="0 0 $w $h">\n'
-        '$style\n'
-        '$paths\n'
+        'viewBox="$viewbox">\n'
+        '<style>\n'
+        '$style'
+        '</style>\n'
+        '$features'
         '</svg>'
-    )
-    style: str = (
-        pad + '<style>\n' +
-        pad * 2 + 'path {fill: black; stroke: white; '
-                  'stroke-width: 0.2px}\n' +
-        pad + '</style>\n'
     )
 
     """
@@ -51,33 +47,46 @@ class Svg:
     #                      'r="0.5" style="fill:red;" />\n')
     """
 
-    def __init__(self, map_obj: MapObj) -> None:
-        self.map_obj = map_obj
-        self.w = map_obj.klass.w
-        self.h = map_obj.klass.h
-        self.fpath = map_obj.svg_fpath
+    def __init__(self, mo: MapObj) -> None:
+        self.mo = mo
+        self.w = mo.klass.w
+        self.h = mo.klass.h
+        self.fpath = mo.svg_fpath
         self.t = Template(self.svg_code)
 
     def run(self, show_ids: bool = False) -> None:
-        """Create paths and place them into SVG code."""
+        """
         svg_paths: list[str] = []
-        for mpg in self.map_obj.get_children():
+        for feature in self.mo.get_children():
             coords = ''
-            for polygon in mpg.get_children():
+            for ch in feature.get_children():
                 coords += 'M'  # NOTE use small letter for dx,dy
-                for pt in polygon.get_children():
+                for pt in ch.get_points():
                     # coords += f' {dx:.3f},{dy:.3f}'  # NOTE for dx,dy
                     coords += f' {pt.x} {pt.y}'
+
                     if show_ids:
                         svg_paths.append(
                             '<text x="{}" y="{}">{}</text>\n'
                             .format(pt.x + 10 * polygon.id_,
                                     pt.y - 10 * polygon.id_, pt.id_))
+
                 coords += ' Z'  # NOTE use small letter for dx,dy
-            svg_paths.append('{}<path d="{}" id="{}" />\n'
-                             .format(pad, coords, mpg.path_id))
+            path_id = feature.properties.get('name', '')
+            svg_paths.append(f'{pad}<path d="{coords}" id="{path_id}" />\n')
         paths = ''.join(svg_paths)
-        svg_code = self.t.substitute(w=self.w, h=self.h,
-                                     paths=paths, style=self.style)
+        """
+
+        features_code = ''
+        features_style = ''
+        for feature in self.mo.get_children():
+            for ch in feature.get_children():
+                features_code += ch.get_svg_code()
+                style = ch.get_svg_style()
+                if style not in features_style:
+                    features_style += style
+        svg_code = self.t.substitute(
+            viewbox=self.mo.bbox.get_viewbox(),
+            style=features_style, features=features_code)
         with open(self.fpath, 'w', encoding=settings.encoding) as f:
             f.writelines(svg_code)

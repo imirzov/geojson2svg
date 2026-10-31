@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any, Iterator
 
+from model.obj import Obj
+
 
 class Geometry:
     """GeoJSON geometry."""
@@ -22,6 +24,16 @@ class Feature:
         self.type: str = d.get('type', '')
         self.properties: dict[str, Any] = d.get('properties', {})
         self.geometry: Geometry = Geometry(d.get('geometry', {}))
+        self.children: list[Obj] = [
+            # Point, LineString, Polygon,
+            # MultiPoint, MultiLineString, MultiPolygon
+        ]
+
+    def add_child(self, child: Obj) -> None:
+        self.children.append(child)
+
+    def get_children(self) -> list[Obj]:
+        return self.children
 
 
 def get_features(fpath: Path) -> Iterator[Feature]:

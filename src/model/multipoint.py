@@ -4,35 +4,36 @@
 """Represents a collection of separate geographic positions."""
 
 from __future__ import annotations
-from typing import Any, override
+from typing import override
 
-from base import get_nested_list_depth
+from model.point import POINTS, pt_type, Point, create_point
 from model.obj import Obj
-from model.point import POINTS, Point, create_point, pt_type
 
 
-MULTIPOINTS: dict[str, MultiPoint] = dict()  # path_id: MultiPoint
+# {id_: MultiPoint}
+MULTIPOINTS: dict[str | int, MultiPoint] = dict()
+
 _next_id = 0
 mpt_type = list[pt_type]
 
 
 class MultiPoint(Obj):
-    """Parent of Point, consists of multiple Point objects."""
+    COORDINATES_LIST_DEPTH = 2
 
     def __init__(self, path_id: str, coordinates: mpt_type) -> None:
-        super().__init__()
+        super().__init__(coordinates)
         global _next_id
         self.id_ = _next_id
         _next_id += 1
+        assert self.check_coords(), str(coordinates)[:100]
         self.path_id = path_id
         self.set_children(coordinates)
         self.set_bbox()
 
     def set_children(self, coordinates: mpt_type) -> None:
-        assert is_multipoint(coordinates), str(coordinates)[:100]
         for coords in coordinates:
-            point = create_point(coords, self)
-            self.children.append(point.id_)
+            pt = create_point(coords, self)
+            self.children.append(pt.id_)
         assert len(self.children), 'MultiPoint has no children!'
 
     @override
@@ -61,7 +62,3 @@ def find_overlapping_multipoints(
             if mp1.is_overlapping_with(mp2):
                 overlapping_pairs.append((mp1, mp2))
     return overlapping_pairs
-
-
-def is_multipoint(coordinates: list[Any]) -> bool:
-    return get_nested_list_depth(coordinates) == 2

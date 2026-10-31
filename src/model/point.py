@@ -11,18 +11,22 @@ from base.bbox import BBox
 from model.obj import Obj
 
 
-POINTS: dict[str | int, Point] = dict()  # id_: (x, y)
+# {id_: Point}
+POINTS: dict[str | int, Point] = dict()
+
 _next_id = 0
 pt_type = tuple[float, float]
 
 
 class Point(Obj):
+    COORDINATES_LIST_DEPTH = 1
 
     def __init__(self, coordinates: pt_type, parent: Any = None) -> None:
-        super().__init__()
+        super().__init__(coordinates)
         global _next_id
         self.id_ = _next_id
         _next_id += 1
+        assert self.check_coords(), str(coordinates)[:100]
         self.x = coordinates[0]
         self.y = coordinates[1]
         self.parent = parent
@@ -38,6 +42,14 @@ class Point(Obj):
     @override
     def get_points(self) -> list[Any]:
         return []
+
+    @override
+    def get_svg_code(self) -> str:
+        return f'<circle cx="{self.x}" cy="{self.y}" r="0.5" />\n'
+
+    @override
+    def get_svg_style(self) -> str:
+        return 'circle {fill:black; stroke:white; stroke-width:0.2px;}\n'
 
     def round(self, precision: int) -> None:
         self.x = round(self.x // precision * precision)

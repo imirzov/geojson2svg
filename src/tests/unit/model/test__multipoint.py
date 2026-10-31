@@ -5,6 +5,7 @@ import time
 import unittest
 
 from base.log import initialize_logging, log_time_delta
+
 from model.multipoint import (
     MULTIPOINTS,
     MultiPoint,
@@ -23,14 +24,14 @@ class TestMultiPoint(unittest.TestCase):
         initialize_logging()
 
     def test__model__multipoint__create_multipoint(self) -> None:
-        multipoint = create_multipoint('test', [(1.0, 2.0), (3.0, 4.0)])
+        mpt = create_multipoint('test', [(1.0, 2.0), (3.0, 4.0)])
 
         try:
-            self.assertIs(MULTIPOINTS['test'], multipoint)
-            self.assertEqual(len(multipoint.get_children()), 2)
+            self.assertIs(MULTIPOINTS['test'], mpt)
+            self.assertEqual(len(mpt.get_children()), 2)
         finally:
             MULTIPOINTS.pop('test', None)
-            for point in multipoint.get_points():
+            for point in mpt.get_points():
                 POINTS.pop(point.id_, None)
 
     def test__model__multipoint__find_overlapping_multipoints(self) -> None:
@@ -45,44 +46,44 @@ class TestMultiPoint(unittest.TestCase):
                 [(first, second)],
             )
         finally:
-            for multipoint in multipoints:
-                for point in multipoint.get_points():
-                    POINTS.pop(point.id_, None)
+            for mpt in multipoints:
+                for pt in mpt.get_points():
+                    POINTS.pop(pt.id_, None)
 
     def test__model__multipoint__is_multipoint(self) -> None:
         self.assertTrue(is_multipoint([(1.0, 2.0), (3.0, 4.0)]))
         self.assertFalse(is_multipoint([[(1.0, 2.0)]]))
 
     def test__model__multipoint__MultiPoint__get_children(self) -> None:
-        multipoint = MultiPoint('test', [(1.0, 2.0)])
+        mpt = MultiPoint('test', [(1.0, 2.0)])
 
         try:
-            self.assertEqual(len(multipoint.get_children()), 1)
-            self.assertIs(multipoint.get_children()[0].parent, multipoint)
+            self.assertEqual(len(mpt.get_children()), 1)
+            self.assertIs(mpt.get_children()[0].parent, mpt)
         finally:
-            for point in multipoint.get_points():
-                POINTS.pop(point.id_, None)
+            for pt in mpt.get_points():
+                POINTS.pop(pt.id_, None)
 
     def test__model__multipoint__MultiPoint__get_points(self) -> None:
-        multipoint = MultiPoint('test', [(1.0, 2.0), (3.0, 4.0)])
+        mpt = MultiPoint('test', [(1.0, 2.0), (3.0, 4.0)])
 
         try:
-            self.assertEqual(len(multipoint.get_points()), 2)
-            self.assertEqual(multipoint.get_points(),
-                             multipoint.get_children())
+            self.assertEqual(len(mpt.get_points()), 2)
+            self.assertEqual(mpt.get_points(),
+                             mpt.get_children())
         finally:
-            for point in multipoint.get_points():
-                POINTS.pop(point.id_, None)
+            for pt in mpt.get_points():
+                POINTS.pop(pt.id_, None)
 
     def test__model__multipoint__MultiPoint__set_children(self) -> None:
-        multipoint = MultiPoint('test', [(1.0, 2.0)])
+        mpt = MultiPoint('test', [(1.0, 2.0)])
 
         try:
-            multipoint.set_children([(3.0, 4.0)])
-            self.assertEqual(len(multipoint.get_children()), 2)
+            mpt.set_children([(3.0, 4.0)])
+            self.assertEqual(len(mpt.get_children()), 2)
         finally:
-            for point in multipoint.get_points():
-                POINTS.pop(point.id_, None)
+            for pt in mpt.get_points():
+                POINTS.pop(pt.id_, None)
 
     @classmethod
     def tearDownClass(cls) -> None:

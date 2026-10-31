@@ -4,7 +4,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Polygon example"
+        "name": "Polygon with one hole"
       },
       "geometry": {
         "type": "Polygon",
@@ -47,6 +47,84 @@
             [
               20.0,
               30.0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Polygon with Two Holes",
+        "description": "A single polygon feature featuring two independent interior cutouts."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -15,
+              -15
+            ],
+            [
+              15,
+              -15
+            ],
+            [
+              15,
+              15
+            ],
+            [
+              -15,
+              15
+            ],
+            [
+              -15,
+              -15
+            ]
+          ],
+          [
+            [
+              -10,
+              -10
+            ],
+            [
+              -5,
+              -10
+            ],
+            [
+              -5,
+              -5
+            ],
+            [
+              -10,
+              -5
+            ],
+            [
+              -10,
+              -10
+            ]
+          ],
+          [
+            [
+              5,
+              5
+            ],
+            [
+              10,
+              5
+            ],
+            [
+              10,
+              10
+            ],
+            [
+              5,
+              10
+            ],
+            [
+              5,
+              5
             ]
           ]
         ]

@@ -29,3 +29,6 @@ class BBox:
         return f'BBox(xmin={self.xmin}, xmax={self.xmax}, ' \
                     f'ymin={self.ymin}, ymax={self.ymax})\n' \
                     f'dx={self.dx}, dy={self.dy}'
+
+    def get_viewbox(self) -> str:
+        return f'{self.xmin - 1} {self.ymin - 1} {self.dx + 2} {self.dy + 2}'

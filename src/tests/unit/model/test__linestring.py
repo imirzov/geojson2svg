@@ -5,10 +5,9 @@ import time
 import unittest
 
 from base.log import initialize_logging, log_time_delta
+from model.factory import LINESTRINGS, create_linestring
 from model.linestring import (
-    LINESTRINGS,
     LineString,
-    create_linestring,
     is_linestring,
 )
 from model.point import POINTS
@@ -59,8 +58,8 @@ class TestLineString(unittest.TestCase):
         self.assertEqual(len(linestring.get_points()), 2)
         self.assertTrue(
             all(
-                point.parent is linestring
-                for point in linestring.get_points()
+                pt.parent is linestring
+                for pt in linestring.get_points()
             )
         )
 

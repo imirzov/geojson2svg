@@ -4,20 +4,23 @@
 from abc import ABC, abstractmethod
 from typing import Any, Self
 
+from base import get_nested_list_depth
 from base.bbox import BBox
 
 
 class Obj(ABC):
+    COORDINATES_LIST_DEPTH = 0
 
-    def __init__(self) -> None:
+    def __init__(self, coordinates: Any) -> None:
         super().__init__()
         self.id_ = 0
-        self.children: list[int | str] = list()
+        self.coordinates = coordinates
+        self.children: list[Any] = list()
         self.bbox = BBox()
 
     def set_bbox(self) -> None:
-        for ch in self.get_children():
-            self.bbox += ch.bbox
+        for pt in self.get_points():
+            self.bbox += pt.bbox
 
     @abstractmethod
     def get_children(self) -> list[Any]:
@@ -26,6 +29,14 @@ class Obj(ABC):
     @abstractmethod
     def get_points(self) -> list[Any]:
         ...
+
+    def remove_point(self, id_: int) -> None:
+        assert id_ in self.children
+        self.children.remove(id_)
+
+    def check_coords(self) -> bool:
+        return get_nested_list_depth(self.coordinates) \
+            == self.COORDINATES_LIST_DEPTH
 
     def is_overlapping_with(self, obj: Self) -> bool:
 
@@ -60,3 +71,13 @@ class Obj(ABC):
     #     """
     #     for ch in self.get_children():
     #         ch.convert_coords_to_px()
+
+    @abstractmethod
+    def get_svg_code(self) -> str:
+        """Return the SVG code for this object."""
+        ...
+
+    @abstractmethod
+    def get_svg_style(self) -> str:
+        """Return the SVG style for this object."""
+        ...

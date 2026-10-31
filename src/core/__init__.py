@@ -16,9 +16,9 @@ class Good0(MapObj):
     def run(self) -> None:
         Coords2Px(self).apply()
         Round(self).apply(precision=1)
-        for mpg in self.get_children():
-            for polygon in mpg.get_children():
-                RemoveNeedles(polygon.get_points()).apply()
+        for feature in self.get_children():
+            for ch in feature.get_children():
+                RemoveNeedles(ch.get_points()).apply()
         r.info(f'Point count: {len(self.get_points())}')
 
 

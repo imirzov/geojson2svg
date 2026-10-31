@@ -15,7 +15,7 @@ import traceback
 # from base.lands import District1, District2, District3, District4
 from base.lands import Test1, Test2, Test3, Test4
 from core.svg import Svg
-from core import Good0 as MapObj
+from core import Good4 as MapObj
 from base.log import r, initialize_logging
 from utils.format_geojson import format_geojson
 from utils.add_properties import add_properties
