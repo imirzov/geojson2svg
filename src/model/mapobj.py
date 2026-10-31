@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-import json
 import os
 from typing import Self, override
 
 from base import to_en
 from base.lands import Land
+from model.feature import get_features
 from model.obj import Obj
 from model.point import POINTS, Point
 from model.multipolygon import MULTIPOLYGONS, MultiPolygon, create_multipolygon
-import settings
 
 PARENTS: dict[int, str] = dict()  # id_: name
 
@@ -45,10 +44,9 @@ class MapObj(Obj):
         assert self.klass.fpath.exists(), \
             f'File not found: {self.klass.fpath}'
 
-        with open(self.klass.fpath, 'r', encoding=settings.encoding) as f:
-            geojson = json.load(f)
-        for feature in geojson['features']:
-            p = feature['properties']
+        for feature in get_features(self.klass.fpath):
+            p = feature.properties
+            g = feature.geometry
             path_id = p[self.klass.name]
             if self.klass.parent is not None:
                 if self.klass.parent in p and self.klass.id in p:
@@ -61,10 +59,10 @@ class MapObj(Obj):
                     PARENTS[p[self.klass.id]] = p[self.klass.name]
             path_id = to_en(path_id)
 
-            if feature['geometry']['type'] == 'MultiPolygon':
-                coordinates = feature['geometry']['coordinates']
+            if g.type == 'MultiPolygon':
+                coordinates = g.coordinates
             else:
-                coordinates = [feature['geometry']['coordinates']]
+                coordinates = [g.coordinates]
             mpg = create_multipolygon(path_id, coordinates)
             self.children.append(mpg.path_id)
 
