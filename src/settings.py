@@ -8,10 +8,12 @@ Global application's settings.
 import logging
 from pathlib import Path
 
-src = Path(__file__).parent.resolve()
-files = Path(src.parent / 'files').resolve()
-logs = Path(src.parent / 'logs').resolve()
-tests = Path(src / 'tests').resolve()
+root = Path(__file__).parent.parent.resolve()
+src = root / 'src'
+files = root / 'files'
+logs = root / 'logs'
+tests = root / 'tests'
+src_tests = src / 'tests'
 
 
 for d in [logs, files]:

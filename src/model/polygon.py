@@ -77,7 +77,4 @@ def find_overlapping_polygons(polygons: list[Polygon]) \
 
 
 def is_polygon(coordinates: list[Any]) -> bool:
-    return (
-        len(coordinates) == 1
-        and get_nested_list_depth(coordinates) == 3
-    )
+    return get_nested_list_depth(coordinates) == 3

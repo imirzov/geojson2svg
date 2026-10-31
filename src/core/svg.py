@@ -26,6 +26,7 @@ class Svg:
         pad + '</style>\n'
     )
 
+    """
     # pad * 2 + 'path#plzensky-kraj {fill: transparent; '
     #           'stroke: black; stroke-width: 0.5px}\n',
     # pad * 2 + 'path#karlovarsky-kraj {fill: transparent; '
@@ -40,6 +41,15 @@ class Svg:
     #           'stroke: red; stroke-width: 0.5px}\n',
     # pad * 2 + 'path#ustecky-kraj {fill: transparent; stroke: blue; '
     #           'stroke-width: 0.5px}\n'
+
+    # for pt in BORDER_UTMOST_POINTS:
+    #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
+    #                      'r="0.5" style="fill:black;" />\n')
+    # for id_ in DISORDERED_POINTS:
+    #     pt = POINTS[id_]
+    #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
+    #                      'r="0.5" style="fill:red;" />\n')
+    """
 
     def __init__(self, map_obj: MapObj) -> None:
         self.map_obj = map_obj
@@ -56,7 +66,7 @@ class Svg:
             for polygon in mpg.get_children():
                 coords += 'M'  # NOTE use small letter for dx,dy
                 for pt in polygon.get_children():
-                    # coords += ' {:.3f},{:.3f}'.format(dx, dy) # for dx,dy
+                    # coords += f' {dx:.3f},{dy:.3f}'  # NOTE for dx,dy
                     coords += f' {pt.x} {pt.y}'
                     if show_ids:
                         svg_paths.append(
@@ -66,13 +76,6 @@ class Svg:
                 coords += ' Z'  # NOTE use small letter for dx,dy
             svg_paths.append('{}<path d="{}" id="{}" />\n'
                              .format(pad, coords, mpg.path_id))
-        # for pt in BORDER_UTMOST_POINTS:
-        #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
-        #                      'r="0.5" style="fill:black;" />\n')
-        # for id_ in DISORDERED_POINTS:
-        #     pt = POINTS[id_]
-        #     svg_paths.append(f'{pad}<circle cx="{pt.x}" cy="{pt.y}" '
-        #                      'r="0.5" style="fill:red;" />\n')
         paths = ''.join(svg_paths)
         svg_code = self.t.substitute(w=self.w, h=self.h,
                                      paths=paths, style=self.style)

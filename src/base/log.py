@@ -28,10 +28,13 @@ def initialize_logging(erase: bool = True, test: bool = False,
     if caller is None:
         caller = inspect.stack()[1][1]
     subfolder = ''
+
+    # TODO WTF?
     for name in ('tests', 'app1', 'app2', 'app3'):
         if os.sep + name in caller:
             subfolder = name
             break
+
     log_dir = settings.logs / subfolder
     log_dir.mkdir(parents=True, exist_ok=True)
     caller = os.path.basename(caller)

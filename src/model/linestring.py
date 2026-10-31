@@ -49,7 +49,4 @@ def create_linestring(coordinates: ls_type) -> LineString:
 
 
 def is_linestring(coordinates: list[Any]) -> bool:
-    return (
-        len(coordinates) >= 2
-        and get_nested_list_depth(coordinates) == 2
-    )
+    return get_nested_list_depth(coordinates) == 2

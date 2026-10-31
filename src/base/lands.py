@@ -5,7 +5,7 @@
 
 from pathlib import Path
 
-from settings import files
+from settings import files, tests
 
 
 state = files / 'state'
@@ -15,7 +15,6 @@ districts_with_prague = districts / 'districts_with_prague'
 cities = files / 'cities'
 city_parts = cities / 'city_parts'
 praha = cities / 'praha'
-tests = files / 'tests'
 
 
 class Land:
@@ -152,6 +151,6 @@ class Test3(Land):
 
 
 class Test4(Land):
-    fpath = files / 'tests' / '4.geojson'
+    fpath = tests / '4.geojson'
     w = 1000
     h = 1000

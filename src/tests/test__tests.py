@@ -43,7 +43,7 @@ def get_module(mname: str) -> types.ModuleType:
 
 
 def get_src_modules() -> list[types.ModuleType]:
-    return get_modules(directory=settings.src, skip=[settings.tests])
+    return get_modules(directory=settings.src, skip=[settings.src_tests])
 
 
 def get_classes(my_module: types.ModuleType) -> dict[str, type[Any]]:
@@ -92,7 +92,7 @@ def get_methods(my_class: type) -> list[Callable[..., Any]]:
 
 def get_existing_unittests() -> dict[str, list[Path]]:
     test_names: dict[str, list[Path]] = {}
-    dpath = settings.tests / 'unit'
+    dpath = settings.src_tests / 'unit'
     for m in get_modules(directory=dpath):
         if m.__file__ is None:
             continue
@@ -109,7 +109,7 @@ def get_test_path(my_module: types.ModuleType) -> Path:
         raise ValueError(f'Module {my_module.__name__} has no file')
     source_path = Path(my_module.__file__).relative_to(settings.src)
     test_name = f'test__{source_path.stem}.py'
-    return settings.tests / 'unit' / source_path.parent / test_name
+    return settings.src_tests / 'unit' / source_path.parent / test_name
 
 
 def get_needed_tests() -> dict[str, Path]:

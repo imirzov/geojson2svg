@@ -15,10 +15,6 @@ class TestPoint(unittest.TestCase):
         cls.start = time.perf_counter()
         initialize_logging()
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        log_time_delta(cls.start)
-
     def test__model__point__create_point(self) -> None:
         points = [
             create_point((float(i), float(i)))
@@ -39,6 +35,10 @@ class TestPoint(unittest.TestCase):
     @unittest.skip("TODO: implement test")
     def test__model__point__merge_points_to(self) -> None:
         ...
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        log_time_delta(cls.start)
 
 
 class TestPoint__Point(unittest.TestCase):
